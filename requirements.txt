@@ -1,0 +1,42 @@
+# ============================================================
+# DocuIntel Phase 1 — Requirements
+# ============================================================
+# Install: pip install -r requirements.txt
+#
+# Python version: 3.10+ recommended (uses X | Y type hints)
+# All models run locally — no paid APIs required in Phase 1.
+# ============================================================
+
+# ── Web Framework ────────────────────────────────────────────
+fastapi==0.111.0
+uvicorn[standard]==0.30.1         # ASGI server (includes websockets + extras)
+python-multipart==0.0.9           # Required for file upload (UploadFile)
+
+# ── Config ───────────────────────────────────────────────────
+pydantic==2.7.1
+pydantic-settings==2.3.0          # BaseSettings with .env file support
+
+# ── PDF Processing ───────────────────────────────────────────
+PyMuPDF==1.24.5                   # fitz — fast PDF text extraction
+
+# ── Text Splitting ───────────────────────────────────────────
+langchain==0.2.3
+langchain-core==0.2.5
+langchain-community==0.2.4        # HuggingFaceBgeEmbeddings lives here
+
+# ── Embeddings ───────────────────────────────────────────────
+sentence-transformers==3.0.1      # Powers BGE model loading
+torch==2.3.1                      # Required by sentence-transformers (CPU build)
+# Note: torch CPU build is ~800MB. If you have a GPU, install the CUDA version:
+# pip install torch==2.3.1+cu118 --index-url https://download.pytorch.org/whl/cu118
+
+# ── Vector Database ──────────────────────────────────────────
+chromadb==0.5.3                   # Local persistent vector store
+
+# ── Utilities ────────────────────────────────────────────────
+python-dotenv==1.0.1              # .env file loading (also used by pydantic-settings)
+
+# ── Future Phases (do not install yet, listed for reference) ─
+# rank-bm25==0.2.2                # Phase 4: BM25 keyword retrieval
+# google-generativeai==0.7.0      # Phase 2/3: Gemini LLM + Vision
+# Pillow==10.3.0                  # Phase 3: Image processing
