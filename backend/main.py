@@ -2,16 +2,7 @@
 main.py
 -------
 FastAPI application entry point for DocuIntel backend.
-
-Startup sequence:
-  1. Load .env config via pydantic BaseSettings
-  2. Create required directories (uploads/, chroma_db/)
-  3. Register API routers
-  4. Expose health check endpoint
-
-Run with:
-    cd backend
-    uvicorn main:app --reload --port 8000
+Phase 2: adds the /ask endpoint and LangGraph orchestration.
 """
 
 from contextlib import asynccontextmanager
@@ -21,7 +12,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from config import settings, ensure_directories
-from api.routes import ingest
+from api.routes import ingest, ask
 from utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -39,11 +30,9 @@ async def lifespan(app: FastAPI):
         "Starting DocuIntel backend",
         extra={
             "version": settings.APP_VERSION,
-            "debug": settings.DEBUG,
-            "log_level": settings.LOG_LEVEL,
-            "upload_dir": settings.UPLOAD_DIR,
-            "chroma_dir": settings.CHROMA_PERSIST_DIR,
             "embedding_model": settings.EMBEDDING_MODEL_NAME,
+            "llm_model": settings.GEMINI_MODEL,
+            "gemini_key_set": bool(settings.GEMINI_API_KEY),
         },
     )
 
@@ -51,7 +40,12 @@ async def lifespan(app: FastAPI):
     ensure_directories()
     logger.info("Directories verified")
 
-    logger.info("DocuIntel Phase 1 ready — waiting for requests")
+    # Pre-compile the LangGraph so the first /ask request isn't slow
+    from graph.retrieval_graph import get_retrieval_graph
+    get_retrieval_graph()
+    logger.info("LangGraph retrieval graph compiled and ready")
+
+    logger.info("DocuIntel Phase 2 ready — waiting for requests")
 
     yield  # Application runs between yield and the code below
 
@@ -66,10 +60,10 @@ app = FastAPI(
     version=settings.APP_VERSION,
     description=(
         "Multimodal AI Document Intelligence System\n\n"
-        "Phase 1: PDF ingestion → text extraction → chunking → embeddings → ChromaDB"
+        "Phase 2: LangGraph RAG — question → retrieve → Gemini answer"
     ),
-    docs_url="/docs",      # Swagger UI at http://localhost:8000/docs
-    redoc_url="/redoc",    # ReDoc at http://localhost:8000/redoc
+    docs_url="/docs",
+    redoc_url="/redoc",
     lifespan=lifespan,
 )
 
@@ -89,6 +83,7 @@ app.add_middleware(
 # ── Routers ────────────────────────────────────────────────────────────────────
 
 app.include_router(ingest.router, prefix="/api/v1")
+app.include_router(ask.router, prefix="/api/v1")       # Phase 2: NEW
 
 # Future phases will add:
 # app.include_router(chat.router, prefix="/api/v1")
@@ -97,12 +92,7 @@ app.include_router(ingest.router, prefix="/api/v1")
 
 # ── Health Check ───────────────────────────────────────────────────────────────
 
-@app.get(
-    "/health",
-    summary="Health check",
-    tags=["System"],
-    response_model=Dict[str, Any],
-)
+@app.get("/health", summary="Health check", tags=["System"], response_model=Dict[str, Any])
 def health_check() -> Dict[str, Any]:
     """
     Returns system status and ChromaDB stats.
@@ -123,16 +113,11 @@ def health_check() -> Dict[str, Any]:
         "status": "ok",
         "app": settings.APP_NAME,
         "version": settings.APP_VERSION,
-        "phase": "1 - Ingestion Core",
+        "phase": "2 - LangGraph RAG",
         "embedding_model": settings.EMBEDDING_MODEL_NAME,
-        "vector_db": {
-            "status": db_status,
-            **db_stats,
-        },
-        "directories": {
-            "uploads": str(Path(settings.UPLOAD_DIR).resolve()),
-            "chroma_db": str(Path(settings.CHROMA_PERSIST_DIR).resolve()),
-        },
+        "llm_model": settings.GEMINI_MODEL,
+        "gemini_key_configured": bool(settings.GEMINI_API_KEY),
+        "vector_db": {"status": db_status, **db_stats},
     }
 
 

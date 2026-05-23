@@ -14,7 +14,7 @@ from pydantic import Field
 class Settings(BaseSettings):
     # ── App ──────────────────────────────────────────────────────────────────
     APP_NAME: str = "DocuIntel"
-    APP_VERSION: str = "0.1.0"
+    APP_VERSION: str = "0.2.0"
     DEBUG: bool = False
     LOG_LEVEL: str = "INFO"
 
@@ -37,8 +37,15 @@ class Settings(BaseSettings):
     # One collection for the entire app (documents filtered by metadata)
     CHROMA_COLLECTION_NAME: str = "documents"
 
-    # ── Retrieval (used in later phases, defined here for completeness) ───────
-    RETRIEVAL_TOP_K: int = 20
+    # ── Retrieval (Phase 2) ──────────────────────────────────────────────────
+    RETRIEVAL_TOP_K: int = 5           # Chunks retrieved per question
+
+    # ── LLM (Phase 2) ────────────────────────────────────────────────────────
+    # Free tier: 1,500 requests/day | Get key: https://aistudio.google.com/app/apikey
+    GEMINI_API_KEY: str = ""
+    GEMINI_MODEL: str = "gemini-2.5-flash"
+
+    # ── Future phases ─────────────────────────────────────────────────────────
     RERANK_TOP_N: int = 5
 
     class Config:
