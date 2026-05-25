@@ -1,5 +1,5 @@
 # ============================================================
-# DocuIntel — Requirements (Phase 1 + Phase 2 + Phase 3)
+# DocuIntel — Requirements (Phase 1 + Phase 2 + Phase 3 + Phase 4)
 # ============================================================
 # Install:
 # pip install -r requirements.txt
@@ -46,5 +46,12 @@ google-genai==1.16.1
 rank-bm25==0.2.2
 numpy>=1.26.0
 
-# ── Future Phases ────────────────────────────────────────────
-# Pillow==10.3.0
+# ── Phase 4: OCR Support ────────────────────────────────────
+pytesseract==0.3.13   # Python wrapper for Tesseract OCR
+Pillow>=10.0.0        # Image processing (likely already installed)
+pdf2image==1.17.0     # PDF→image conversion via poppler (optional fallback)
+
+# System dependency (not pip — install once on your OS):
+# Ubuntu/Debian:  sudo apt-get install tesseract-ocr
+# macOS:          brew install tesseract
+# Verify install: tesseract --version

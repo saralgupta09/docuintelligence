@@ -3,16 +3,17 @@ ingestion/pdf_processor.py
 ---------------------------
 Extracts text from PDF files page-by-page using PyMuPDF (fitz).
 
-Why PyMuPDF?
-  - Fastest Python PDF library (C-based)
-  - Preserves page numbers accurately
-  - Handles text, embedded fonts, and most PDF variants
-  - Returns page-level text (essential for citation tracking)
+Phase 4 addition:
+  When OCR_ENABLED=true, pages that have no extractable text layer (scanned
+  PDFs, image-based pages) are automatically routed through pytesseract OCR.
+  The rest of the pipeline (chunker, embeddings, ChromaDB) is unchanged —
+  every page ends up with a .text string regardless of how it was obtained.
 
-Phase 3 note:
-  If a PDF has zero extractable text (scanned/image PDF), this module
-  returns empty strings per page. Phase 3 will detect this and route
-  those pages through the OCR pipeline instead.
+All existing Phase 1/2/3 behaviour is preserved:
+  - PageContent dataclass: unchanged
+  - PDFDocument dataclass: unchanged
+  - extract_text_from_pdf() signature: unchanged
+  - _normalize_whitespace(): unchanged
 """
 
 import fitz  # PyMuPDF — imported as "fitz" (historical name)
@@ -34,9 +35,12 @@ class PageContent:
         page_num:   1-based page number (so citations say "page 3" not "page 2")
         text:       Raw extracted text from the page
         char_count: Number of characters (used to detect scanned pages)
+        ocr_applied: True if this page's text came from OCR rather than direct
+                     text extraction.  Stored in chunk metadata as 'has_ocr'.
     """
     page_num: int
     text: str
+    ocr_applied: bool = False          # Phase 4: flag set when OCR was used
     char_count: int = field(init=False)
 
     def __post_init__(self) -> None:
@@ -76,28 +80,39 @@ class PDFDocument:
     def needs_ocr(self) -> bool:
         """
         True if the majority of pages are empty — indicates a scanned PDF.
-        Phase 3 will use this flag to route through the OCR pipeline.
+        After Phase 4 processing this will be False for successfully OCR'd docs.
         """
         if not self.pages:
             return False
         empty_ratio = sum(1 for p in self.pages if p.is_empty) / len(self.pages)
         return empty_ratio > 0.5  # More than half of pages are image-only
 
+    @property
+    def ocr_page_count(self) -> int:
+        """Number of pages whose text was obtained via OCR (Phase 4)."""
+        return sum(1 for p in self.pages if p.ocr_applied)
+
 
 def extract_text_from_pdf(file_path: str) -> PDFDocument:
     """
     Opens a PDF and extracts text from every page.
+
+    Phase 4 behaviour:
+      If OCR_ENABLED=true in config (default: true), pages with fewer than
+      50 characters of direct text are automatically run through pytesseract.
+      The fitz.Document is kept open while OCR runs so we don't re-open the
+      file for each page, then closed once all pages are processed.
 
     Args:
         file_path: Absolute or relative path to the PDF file.
 
     Returns:
         PDFDocument with per-page content and metadata.
+        Pages processed via OCR have .ocr_applied = True.
 
     Raises:
         FileNotFoundError: If the file doesn't exist.
         ValueError: If the file is not a valid PDF.
-        RuntimeError: If PyMuPDF encounters an unrecoverable error.
     """
     path = Path(file_path)
 
@@ -114,22 +129,71 @@ def extract_text_from_pdf(file_path: str) -> PDFDocument:
     except fitz.FileDataError as e:
         raise ValueError(f"Invalid or corrupted PDF: {file_path}") from e
 
+    # ── Phase 4: import config and OCR module ─────────────────────────────────
+    # Imported here (not at module top) to keep Phase 1 behaviour if OCR
+    # config keys are absent — pydantic will use defaults gracefully.
+    from config import settings
+    ocr_enabled = getattr(settings, "OCR_ENABLED", True)
+    ocr_language = getattr(settings, "OCR_LANGUAGE", "eng")
+    ocr_dpi = getattr(settings, "OCR_DPI", 300)
+
+    if ocr_enabled:
+        from ingestion.ocr_processor import ocr_page
+
     pages: List[PageContent] = []
 
     for page_index in range(len(doc)):
         page = doc[page_index]
+        page_num = page_index + 1       # 1-based
 
-        # extract_text() returns the raw text on the page.
-        # "text" mode is the simplest; "blocks" mode (used in Phase 3+)
-        # preserves layout but is more complex.
+        # ── Direct text extraction (always attempted first) ───────────────────
         raw_text = page.get_text("text")
-
-        # Normalize whitespace: collapse 3+ newlines → 2, strip leading/trailing
         normalized_text = _normalize_whitespace(raw_text)
 
+        ocr_applied = False
+
+        # ── Phase 4: OCR fallback for empty pages ─────────────────────────────
+        # A page is considered empty if it has fewer than 50 chars after
+        # normalisation.  This threshold matches PageContent.is_empty so that
+        # a page which fails direct extraction is OCR'd before is_empty is
+        # evaluated, not after.
+        if ocr_enabled and len(normalized_text.strip()) < 50:
+            logger.info(
+                "Page has no extractable text — attempting OCR",
+                extra={
+                    "file": path.name,
+                    "page_num": page_num,
+                    "direct_chars": len(normalized_text.strip()),
+                },
+            )
+            ocr_text = ocr_page(
+                fitz_doc=doc,
+                page_index=page_index,
+                page_num=page_num,
+                dpi=ocr_dpi,
+                language=ocr_language,
+            )
+            if ocr_text.strip():
+                normalized_text = ocr_text
+                ocr_applied = True
+                logger.info(
+                    "OCR succeeded",
+                    extra={
+                        "file": path.name,
+                        "page_num": page_num,
+                        "ocr_chars": len(normalized_text),
+                    },
+                )
+            else:
+                logger.warning(
+                    "OCR returned no text for page",
+                    extra={"file": path.name, "page_num": page_num},
+                )
+
         page_content = PageContent(
-            page_num=page_index + 1,  # Convert 0-based index to 1-based page number
+            page_num=page_num,
             text=normalized_text,
+            ocr_applied=ocr_applied,
         )
         pages.append(page_content)
 
@@ -147,6 +211,7 @@ def extract_text_from_pdf(file_path: str) -> PDFDocument:
             "file": path.name,
             "total_pages": pdf_doc.total_pages,
             "extractable_pages": len(pdf_doc.extractable_pages),
+            "ocr_pages": pdf_doc.ocr_page_count,
             "needs_ocr": pdf_doc.needs_ocr,
             "total_chars": sum(p.char_count for p in pages),
         },
@@ -157,10 +222,8 @@ def extract_text_from_pdf(file_path: str) -> PDFDocument:
 
 def _normalize_whitespace(text: str) -> str:
     """
-    Cleans up common PDF text extraction artifacts:
-    - Collapses 3+ consecutive newlines into 2 (preserves paragraph breaks)
-    - Strips leading/trailing whitespace
-    - Replaces non-breaking spaces with regular spaces
+    Cleans up common PDF text extraction artifacts.
+    Unchanged from Phase 1.
     """
     import re
 

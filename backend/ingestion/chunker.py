@@ -3,21 +3,14 @@ ingestion/chunker.py
 ---------------------
 Splits PDF page text into overlapping chunks suitable for embedding and retrieval.
 
-Why RecursiveCharacterTextSplitter?
-  - Tries to split on paragraph breaks first (\n\n), then sentence ends (. ),
-    then words — so chunks break at natural boundaries, not mid-sentence.
-  - chunk_overlap ensures sentences that straddle a boundary appear in both
-    adjacent chunks, preventing "lost" context at chunk edges.
-  - Simple, battle-tested, no external dependencies beyond LangChain.
+Phase 4 change (minimal):
+  build_chunk_metadata() now receives and stores the 'ocr_applied' flag from
+  PageContent.ocr_applied so every chunk in ChromaDB records whether its text
+  came from direct extraction or OCR.  This enables filtering and debugging.
 
-Chunk ID format:
-  {doc_id}_{chunk_index}
-  Example: "report_pdf_0", "report_pdf_1", ...
-
-  This makes chunks traceable back to their source document and position.
+All other logic is unchanged from Phase 3.
 """
 
-import hashlib
 from datetime import datetime, timezone
 from typing import List
 
@@ -34,14 +27,9 @@ logger = get_logger(__name__)
 def create_doc_id(filename: str) -> str:
     """
     Creates a stable, filesystem-safe document ID from a filename.
-
-    "My Report (Final) v2.pdf" → "my_report_final_v2_pdf"
-
-    A short MD5 suffix is appended if two filenames would produce the same ID.
-    For Phase 1 we keep it simple — just sanitize the filename.
+    Unchanged from Phase 1.
     """
     import re
-    # Lowercase, replace non-alphanumeric with underscores, collapse extras
     doc_id = re.sub(r"[^a-z0-9]+", "_", filename.lower()).strip("_")
     return doc_id
 
@@ -51,18 +39,8 @@ def chunk_pdf_document(pdf_doc: PDFDocument, upload_timestamp: str) -> List[Docu
     Converts a PDFDocument into a flat list of LangChain Document objects,
     each representing one chunk ready for embedding.
 
-    Strategy:
-    1. Process each page individually (preserves page_num per chunk)
-    2. Run RecursiveCharacterTextSplitter on each page's text
-    3. Attach rich metadata to every chunk
-
-    Args:
-        pdf_doc:          Output from pdf_processor.extract_text_from_pdf()
-        upload_timestamp: ISO 8601 timestamp string (set once at upload time)
-
-    Returns:
-        List of Document objects. Each has .page_content (the text)
-        and .metadata (filename, page_num, chunk_id, etc.)
+    Phase 4: passes page.ocr_applied through to build_chunk_metadata so each
+    chunk records whether its text was obtained via OCR.
     """
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=settings.CHUNK_SIZE,
@@ -86,7 +64,7 @@ def chunk_pdf_document(pdf_doc: PDFDocument, upload_timestamp: str) -> List[Docu
     global_chunk_index = 0  # Increments across ALL pages
 
     for page in pdf_doc.pages:
-        # Skip pages with no usable text (scanned pages handled in Phase 3)
+        # Skip pages with no usable text
         if page.is_empty:
             logger.debug(
                 "Skipping empty page",
@@ -98,7 +76,6 @@ def chunk_pdf_document(pdf_doc: PDFDocument, upload_timestamp: str) -> List[Docu
         page_chunks = splitter.split_text(page.text)
 
         for position_in_page, chunk_text in enumerate(page_chunks):
-            # Skip chunks that are just whitespace after splitting
             if not chunk_text.strip():
                 continue
 
@@ -116,6 +93,7 @@ def chunk_pdf_document(pdf_doc: PDFDocument, upload_timestamp: str) -> List[Docu
                     position_in_page=position_in_page,
                     upload_timestamp=upload_timestamp,
                     char_count=len(chunk_text),
+                    ocr_applied=page.ocr_applied,   # Phase 4: pass through
                 ),
             )
             all_chunks.append(chunk)
@@ -146,16 +124,14 @@ def build_chunk_metadata(
     position_in_page: int,
     upload_timestamp: str,
     char_count: int,
+    ocr_applied: bool = False,      # Phase 4: new parameter, default False
 ) -> dict:
     """
     Builds the metadata dictionary stored alongside each chunk in ChromaDB.
 
-    These fields power:
-    - Citation display: filename + page_num
-    - Deduplication: chunk_id
-    - Filtering: doc_id (retrieve only from a specific document)
-    - Debugging: chunk_index, char_count
-    - Audit: upload_timestamp
+    Phase 4 change: 'has_ocr' is now set from the ocr_applied argument
+    instead of being hardcoded False.  'doc_type' is set to 'scanned_pdf'
+    when the chunk came from an OCR'd page.
     """
     return {
         "chunk_id": chunk_id,
@@ -167,6 +143,6 @@ def build_chunk_metadata(
         "position_in_page": position_in_page,
         "upload_timestamp": upload_timestamp,
         "char_count": char_count,
-        "doc_type": "text_pdf",  # Phase 3 will set "scanned_pdf", "image", etc.
-        "has_ocr": False,         # Phase 3 will set True for OCR'd content
+        "doc_type": "scanned_pdf" if ocr_applied else "text_pdf",   # Phase 4
+        "has_ocr": ocr_applied,                                       # Phase 4
     }

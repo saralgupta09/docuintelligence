@@ -3,20 +3,19 @@ api/routes/ingest.py
 ---------------------
 Handles PDF upload and ingestion via POST /ingest.
 
-Flow:
-  1. Receive uploaded PDF file
-  2. Save to disk (temp storage)
-  3. Extract text per page (PyMuPDF)
-  4. Split into overlapping chunks (RecursiveCharacterTextSplitter)
-  5. Generate BGE embeddings for each chunk
-  6. Store chunks + embeddings in ChromaDB
-  7. Return ingestion summary
+Phase 4 change:
+  The early-return warning block "no text — OCR coming in Phase 3" has been
+  replaced with proper behaviour: because pdf_processor.py now applies OCR
+  automatically to empty pages, 'chunks' will only be empty if OCR is
+  disabled AND the PDF has no text layer, OR if OCR itself found nothing.
+  In that case a clear warning is returned, identical in shape to before.
 
-Error handling:
-  - Non-PDF files → 400 Bad Request
-  - Corrupted PDFs → 422 Unprocessable Entity
-  - PDFs with no text → 200 with warning (Phase 3 will handle OCR)
-  - Storage errors → 500 Internal Server Error
+  Two new response fields are added:
+    ocr_pages_count  — number of pages whose text came from OCR
+    ocr_applied      — True if any page used OCR
+
+  The /ingest endpoint URL, method, request shape, and all existing response
+  fields are unchanged.  /api/v1/ask is not touched.
 """
 
 import shutil
@@ -46,26 +45,30 @@ class PageStats(BaseModel):
     page_num: int
     char_count: int
     is_empty: bool
+    ocr_applied: bool = False       # Phase 4: was OCR used for this page?
 
 
 class IngestResponse(BaseModel):
     """
     Response returned after successful ingestion.
-    Designed to be informative — tells you exactly what happened.
+    All Phase 3 fields are preserved.  Two new Phase 4 fields are added.
     """
-    status: str                       # "success" or "warning"
-    message: str                      # Human-readable summary
+    status: str
+    message: str
     filename: str
     doc_id: str
     total_pages: int
     extractable_pages: int
     total_chunks: int
     chunks_stored: int
-    needs_ocr: bool                   # True if majority of pages were empty
+    needs_ocr: bool
     upload_timestamp: str
     processing_time_ms: float
-    vector_store_total: int           # Total chunks in ChromaDB after ingestion
-    page_stats: List[PageStats]       # Per-page breakdown
+    vector_store_total: int
+    page_stats: List[PageStats]
+    # ── Phase 4 additions ─────────────────────────────────────────────────────
+    ocr_pages_count: int = 0        # Number of pages that went through OCR
+    ocr_applied: bool = False       # True if any page used OCR
 
 
 # ── Route ─────────────────────────────────────────────────────────────────────
@@ -75,8 +78,8 @@ class IngestResponse(BaseModel):
     response_model=IngestResponse,
     summary="Upload and ingest a PDF",
     description=(
-        "Accepts a PDF file, extracts text, chunks it, generates embeddings, "
-        "and stores everything in ChromaDB. Returns a detailed ingestion summary."
+        "Accepts a PDF file, extracts text (with automatic OCR for scanned pages), "
+        "chunks it, generates embeddings, and stores everything in ChromaDB."
     ),
 )
 def ingest_pdf(file: UploadFile = File(..., description="PDF file to ingest")) -> IngestResponse:
@@ -84,7 +87,8 @@ def ingest_pdf(file: UploadFile = File(..., description="PDF file to ingest")) -
     POST /ingest
 
     Accepts multipart/form-data with a 'file' field containing a PDF.
-    Returns ingestion summary on success.
+    Scanned/image-based PDFs are handled automatically via pytesseract OCR
+    when OCR_ENABLED=true (default).
     """
     overall_timer = Timer().__enter__()
     upload_timestamp = datetime.now(timezone.utc).isoformat()
@@ -141,6 +145,7 @@ def ingest_pdf(file: UploadFile = File(..., description="PDF file to ingest")) -
             "file": file.filename,
             "pages": pdf_doc.total_pages,
             "extractable": len(pdf_doc.extractable_pages),
+            "ocr_pages": pdf_doc.ocr_page_count,
             "elapsed_ms": extract_timer.elapsed_ms,
         },
     )
@@ -154,25 +159,32 @@ def ingest_pdf(file: UploadFile = File(..., description="PDF file to ingest")) -
         raise HTTPException(status_code=500, detail=f"Chunking failed: {str(e)}")
 
     if not chunks:
-        # This happens with fully scanned PDFs — no text extracted
-        # Return a warning (Phase 3 will handle OCR for these cases)
+        # Reaches here only when:
+        #   (a) OCR_ENABLED=false  AND  the PDF has no text layer, OR
+        #   (b) OCR ran but extracted nothing (very poor scan quality)
+        ocr_note = (
+            "OCR was attempted but found no text. "
+            "The scan quality may be too poor, or OCR_ENABLED=false."
+            if getattr(settings, "OCR_ENABLED", True)
+            else "OCR is disabled (OCR_ENABLED=false). "
+                 "Enable it to process scanned PDFs."
+        )
         return IngestResponse(
             status="warning",
-            message=(
-                "No text could be extracted from this PDF. "
-                "It may be a scanned document. OCR support coming in Phase 3."
-            ),
+            message=f"No text could be extracted from '{file.filename}'. {ocr_note}",
             filename=file.filename,
-            doc_id=chunks[0].metadata["doc_id"] if chunks else "unknown",
+            doc_id="unknown",
             total_pages=pdf_doc.total_pages,
             extractable_pages=0,
             total_chunks=0,
             chunks_stored=0,
-            needs_ocr=True,
+            needs_ocr=pdf_doc.needs_ocr,
             upload_timestamp=upload_timestamp,
-            processing_time_ms=0,
+            processing_time_ms=0.0,
             vector_store_total=0,
             page_stats=_build_page_stats(pdf_doc),
+            ocr_pages_count=pdf_doc.ocr_page_count,
+            ocr_applied=pdf_doc.ocr_page_count > 0,
         )
 
     logger.info(
@@ -239,6 +251,7 @@ def ingest_pdf(file: UploadFile = File(..., description="PDF file to ingest")) -
     overall_timer.__exit__(None, None, None)
 
     doc_id = chunks[0].metadata["doc_id"]
+    ocr_pages = pdf_doc.ocr_page_count
 
     logger.info(
         "Ingestion complete ✓",
@@ -246,13 +259,15 @@ def ingest_pdf(file: UploadFile = File(..., description="PDF file to ingest")) -
             "file": file.filename,
             "doc_id": doc_id,
             "chunks": stored_count,
+            "ocr_pages": ocr_pages,
             "total_ms": overall_timer.elapsed_ms,
         },
     )
 
     return IngestResponse(
         status="success",
-        message=f"Successfully ingested '{file.filename}' — {stored_count} chunks stored.",
+        message=f"Successfully ingested '{file.filename}' — {stored_count} chunks stored."
+                + (f" ({ocr_pages} page(s) processed via OCR)" if ocr_pages else ""),
         filename=file.filename,
         doc_id=doc_id,
         total_pages=pdf_doc.total_pages,
@@ -264,18 +279,21 @@ def ingest_pdf(file: UploadFile = File(..., description="PDF file to ingest")) -
         processing_time_ms=overall_timer.elapsed_ms,
         vector_store_total=stats["total_chunks"],
         page_stats=_build_page_stats(pdf_doc),
+        ocr_pages_count=ocr_pages,
+        ocr_applied=ocr_pages > 0,
     )
 
 
 # ── Helper ────────────────────────────────────────────────────────────────────
 
 def _build_page_stats(pdf_doc: PDFDocument) -> List[PageStats]:
-    """Builds a list of per-page stats for the response."""
+    """Builds per-page stats for the response. Phase 4: adds ocr_applied."""
     return [
         PageStats(
             page_num=page.page_num,
             char_count=page.char_count,
             is_empty=page.is_empty,
+            ocr_applied=page.ocr_applied,       # Phase 4
         )
         for page in pdf_doc.pages
     ]

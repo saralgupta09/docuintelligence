@@ -14,7 +14,7 @@ from pydantic import Field
 class Settings(BaseSettings):
     # ── App ──────────────────────────────────────────────────────────────────
     APP_NAME: str = "DocuIntel"
-    APP_VERSION: str = "0.3.0"
+    APP_VERSION: str = "0.4.0"
     DEBUG: bool = False
     LOG_LEVEL: str = "INFO"
 
@@ -68,6 +68,26 @@ class Settings(BaseSettings):
     # Each "turn" = one user question + one assistant answer.
     # Higher values → better continuity, higher token cost.
     MAX_MEMORY_TURNS: int = 5
+
+    # ── OCR (Phase 4) ────────────────────────────────────────────────────────
+    # OCR_ENABLED: master switch for the OCR pipeline.
+    #   true  — pages with no extractable text are automatically OCR'd
+    #            using pytesseract (requires tesseract binary installed).
+    #   false — scanned pages are skipped; same behaviour as Phase 3.
+    OCR_ENABLED: bool = True
+
+    # OCR_LANGUAGE: Tesseract language code for the OCR engine.
+    #   "eng" is always available.  For other languages install the
+    #   corresponding data pack:
+    #     sudo apt-get install tesseract-ocr-<lang>
+    #   Multiple languages: "eng+fra" (English + French)
+    OCR_LANGUAGE: str = "eng"
+
+    # OCR_DPI: render resolution used when converting PDF pages to images.
+    #   300 is the standard for OCR — good balance of accuracy and speed.
+    #   150 is faster but degrades on small fonts.
+    #   400+ gives marginal gain with much higher memory use.
+    OCR_DPI: int = 300
 
     # ── Future phases ─────────────────────────────────────────────────────────
     RERANK_TOP_N: int = 5
