@@ -1,9 +1,14 @@
 """
-main.py
+main.py  (MODIFIED for Phase 5 frontend integration)
 -------
-FastAPI application entry point for DocuIntel backend.
-Phase 4: OCR support for scanned PDFs added to the ingestion pipeline.
-All Phase 1/2/3 functionality is unchanged.
+Changes from original (both are additive / non-breaking):
+
+1. CORSMiddleware now also allows http://localhost:5173 and
+   http://127.0.0.1:5173  (Vite dev server default port).
+   The original origins (8501) are preserved for backward compat.
+
+2. The new documents router is registered at /api/v1.
+   All existing routes and lifespan logic are UNCHANGED.
 """
 
 from contextlib import asynccontextmanager
@@ -14,6 +19,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from config import settings, ensure_directories
 from api.routes import ingest, ask
+from api.routes.documents import router as documents_router   # ← NEW
 from utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -77,7 +83,7 @@ async def lifespan(app: FastAPI):
                 extra={"error": str(e)},
             )
 
-    logger.info("DocuIntel Phase 4 ready — waiting for requests")
+    logger.info("DocuIntel Phase 5 ready — waiting for requests")
     yield
     logger.info("DocuIntel backend shutting down")
 
@@ -87,23 +93,37 @@ app = FastAPI(
     version=settings.APP_VERSION,
     description=(
         "Multimodal AI Document Intelligence System\n\n"
-        "Phase 4: OCR support for scanned PDFs added to the ingestion pipeline."
+        "Phase 5: React frontend integration."
     ),
     docs_url="/docs",
     redoc_url="/redoc",
     lifespan=lifespan,
 )
 
+# ── CORS ──────────────────────────────────────────────────────────────────────
+# Phase 5 addition: added Vite dev server origins (5173).
+# Original Streamlit origins (8501) are preserved for backward compat.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8501", "http://127.0.0.1:8501"],
+    allow_origins=[
+        "http://localhost:5173",     # ← Phase 5: Vite dev server
+        "http://127.0.0.1:5173",    # ← Phase 5: Vite dev server (alternate)
+        "http://localhost:8501",     # Original: Streamlit
+        "http://127.0.0.1:8501",    # Original: Streamlit
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# ── Routers ───────────────────────────────────────────────────────────────────
 app.include_router(ingest.router, prefix="/api/v1")
 app.include_router(ask.router, prefix="/api/v1")
+app.include_router(
+    documents_router,
+    prefix="/api/v1/documents",
+    tags=["Documents"]
+)
 
 
 @app.get("/health", summary="Health check", tags=["System"], response_model=Dict[str, Any])
@@ -146,7 +166,7 @@ def health_check() -> Dict[str, Any]:
         "status": "ok",
         "app": settings.APP_NAME,
         "version": settings.APP_VERSION,
-        "phase": "4 - OCR + Hybrid RAG + Memory",
+        "phase": "5 - React Frontend + OCR + Hybrid RAG + Memory",
         "embedding_model": settings.EMBEDDING_MODEL_NAME,
         "llm_model": settings.GEMINI_MODEL,
         "gemini_key_configured": bool(settings.GEMINI_API_KEY),

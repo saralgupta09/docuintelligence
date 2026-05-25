@@ -1,28 +1,13 @@
 """
-api/routes/ask.py
+api/routes/ask.py  (MODIFIED for Phase 5 frontend integration)
 ------------------
-Handles question-answering via POST /api/v1/ask.
+Only change from original: SourceReference now includes an optional
+'score' field (float | None).  It is populated from retrieved_docs
+(which already carries combined_score) by matching chunk_id.
 
-Phase 3 changes:
-  - Accepts optional 'session_id' in the request body.
-  - Generates a UUID session_id if the client doesn't provide one.
-  - Loads conversation history from ConversationManager before graph.invoke().
-  - Saves the Q&A turn to ConversationManager after graph.invoke().
-  - Returns 'rewritten_query' and 'session_id' in the response (new fields).
-  - All Phase 2 response fields are preserved — additive, not breaking.
-
-Backward compatibility:
-  Clients sending {"question": "..."} (no session_id) continue to work.
-  They get a new session_id in the response they can use for follow-ups.
-
-Flow:
-  1. Receive question + optional session_id
-  2. Generate session_id if absent
-  3. Load chat_history from ConversationManager
-  4. create_initial_state(question, chat_history)
-  5. graph.invoke() → rewrite → retrieve → generate
-  6. Save Q&A to ConversationManager
-  7. Return answer + sources + rewritten_query + session_id
+All other logic, imports, route path, and response fields are UNCHANGED.
+This is a purely additive, non-breaking change — old clients that don't
+use the score field continue to work.
 """
 
 import uuid
@@ -67,6 +52,15 @@ class SourceReference(BaseModel):
     page: int = Field(description="Page number within the document")
     chunk_id: str = Field(description="Internal chunk identifier")
     excerpt: str = Field(description="Short excerpt from the retrieved chunk")
+    # ── Phase 5 addition ──────────────────────────────────────────────────────
+    score: Optional[float] = Field(
+        default=None,
+        description=(
+            "Hybrid retrieval confidence score (0–1).  "
+            "Combined weighted BM25 + vector similarity.  "
+            "Null when not available."
+        ),
+    )
 
 
 class AskResponse(BaseModel):
@@ -104,7 +98,7 @@ class AskResponse(BaseModel):
         "Retrieves relevant chunks from ChromaDB using hybrid BM25 + vector search, "
         "then generates a grounded answer via Gemini 2.5 Flash. "
         "Supports multi-turn conversations via optional session_id. "
-        "Returns the answer, source chunks, rewritten query, and session_id."
+        "Returns the answer, source chunks (with confidence scores), rewritten query, and session_id."
     ),
 )
 def ask(request: AskRequest) -> AskResponse:
@@ -115,7 +109,7 @@ def ask(request: AskRequest) -> AskResponse:
       {"question": "your question here"}
       {"question": "follow-up", "session_id": "uuid-from-previous-response"}
 
-    Returns: answer + sources + rewritten_query + session_id
+    Returns: answer + sources (with score) + rewritten_query + session_id
     """
     question = request.question.strip()
     timestamp = datetime.now(timezone.utc).isoformat()
@@ -188,24 +182,30 @@ def ask(request: AskRequest) -> AskResponse:
         )
 
     # ── Save Q&A to conversation memory ───────────────────────────────────────
-    # Always save both turns together — if either fails, don't save partial history
     try:
         conversation_manager.add_turn(session_id, role="user", content=question)
         conversation_manager.add_turn(session_id, role="assistant", content=answer)
     except Exception as e:
-        # Memory save failure must not break the response
         logger.error(
             "Failed to save turn to ConversationManager — response unaffected",
             extra={"error": str(e), "session_id": session_id[:8] + "..."},
         )
 
-    # ── Build response sources ────────────────────────────────────────────────
+    # ── Phase 5: Build chunk_id → combined_score lookup from retrieved_docs ───
+    score_by_chunk_id = {
+        doc["chunk_id"]: doc.get("combined_score")
+        for doc in retrieved_docs
+        if isinstance(doc, dict) and "chunk_id" in doc
+    }
+
+    # ── Build response sources (with optional score) ──────────────────────────
     response_sources = [
         SourceReference(
             filename=source["filename"],
             page=source["page"],
             chunk_id=source["chunk_id"],
             excerpt=source["excerpt"],
+            score=score_by_chunk_id.get(source["chunk_id"]),   # ← Phase 5
         )
         for source in raw_sources
     ]

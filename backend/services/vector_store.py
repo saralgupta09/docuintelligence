@@ -206,27 +206,13 @@ class VectorStoreService:
         results = collection.get(where={"doc_id": {"$eq": doc_id}})
         return len(results["ids"]) > 0
 
-
-# Module-level singleton — shared across all requests
-_vector_store_service: VectorStoreService | None = None
-
-
-def get_vector_store_service() -> VectorStoreService:
-    """
-    Returns the shared VectorStoreService instance.
-    Call this function everywhere instead of creating new instances.
-    """
-    global _vector_store_service
-    if _vector_store_service is None:
-        _vector_store_service = VectorStoreService()
-    return _vector_store_service
-
     def get_all_documents(self) -> list:
         """
         Returns ALL stored chunks as a list of dicts.
 
-        Used exclusively by BM25Service to build its keyword index.
-        Each dict has the same shape as a raw_doc entry in the retrieve node:
+        Used by the /api/v1/documents/ endpoint to build the document list,
+        and by BM25Service to build its keyword index.
+        Each dict has the shape:
           {
             "chunk_id": str,
             "text":     str,
@@ -238,7 +224,7 @@ def get_vector_store_service() -> VectorStoreService:
 
         ChromaDB's .get() without a 'where' filter returns every document in
         the collection.  We pass include=["documents", "metadatas"] to avoid
-        loading embeddings (we don't need them for BM25).
+        loading embeddings (we don't need them here).
 
         Returns [] if the collection is empty or on any error.
         """
@@ -298,3 +284,18 @@ def get_vector_store_service() -> VectorStoreService:
             extra={"doc_id": doc_id, "chunks_deleted": deleted},
         )
         return deleted
+
+
+# Module-level singleton — shared across all requests
+_vector_store_service: VectorStoreService | None = None
+
+
+def get_vector_store_service() -> VectorStoreService:
+    """
+    Returns the shared VectorStoreService instance.
+    Call this function everywhere instead of creating new instances.
+    """
+    global _vector_store_service
+    if _vector_store_service is None:
+        _vector_store_service = VectorStoreService()
+    return _vector_store_service
