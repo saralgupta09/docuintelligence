@@ -34,6 +34,7 @@ class RetrievalResult:
         doc_id: str,
         distance: float,
         metadata: Dict[str, Any],
+        combined_score: float = 0.0,    # Phase 3: populated by HybridRetrievalService
     ) -> None:
         self.chunk_id = chunk_id
         self.text = text
@@ -42,6 +43,7 @@ class RetrievalResult:
         self.doc_id = doc_id
         self.distance = distance          # Lower = more similar (cosine space)
         self.metadata = metadata
+        self.combined_score = combined_score  # 0.0 when used without hybrid service
 
     def excerpt(self, max_chars: int = 200) -> str:
         """Short preview of the chunk text."""

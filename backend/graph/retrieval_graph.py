@@ -1,29 +1,21 @@
 """
 graph/retrieval_graph.py
 -------------------------
-Defines and compiles the Phase 2 LangGraph retrieval workflow.
+Defines and compiles the Phase 3 LangGraph retrieval workflow.
 
-Graph structure:
-  START → retrieve → generate → END
+Phase 3 graph structure:
+  START → rewrite → retrieve → generate → END
 
-  That's it. No loops, no conditionals, no agents.
-  Simple sequential pipeline — exactly what Phase 2 needs.
+  rewrite:  Converts the user's question into a search-optimised standalone
+            query using conversation history.  Falls back to original question
+            if Gemini fails or rewriting is disabled.
+  retrieve: Runs hybrid BM25 + vector search using the rewritten query.
+  generate: Injects chat history into the LLM prompt and produces the answer.
 
-Why LangGraph for a simple 2-step pipeline?
-  1. It makes the pipeline inspectable (you can print the graph structure)
-  2. Phase 4+ adds conditional routing (reranking, hybrid retrieval)
-     without restructuring any existing code — just add new nodes
-  3. State management is explicit (every field is typed and tracked)
-  4. Each node is testable in isolation
-
-How to use this module:
-  from graph.retrieval_graph import get_retrieval_graph, create_initial_state
-
-  graph = get_retrieval_graph()
-  result = graph.invoke(create_initial_state("What is the revenue?"))
-
-  print(result["answer"])
-  print(result["sources"])
+Backward compatibility:
+  create_initial_state() now accepts an optional chat_history parameter.
+  Callers that don't pass it (Phase 2 tests) get [] by default.
+  All state fields have defaults so no existing node code breaks.
 """
 
 from functools import lru_cache
@@ -31,6 +23,7 @@ from functools import lru_cache
 from langgraph.graph import StateGraph, START, END
 
 from graph.state import GraphState
+from graph.nodes.rewrite import rewrite
 from graph.nodes.retrieve import retrieve
 from graph.nodes.generate import generate
 from utils.logger import get_logger
@@ -47,39 +40,32 @@ def build_retrieval_graph():
     2. Register each node (name + function)
     3. Define edges (the execution order)
     4. Compile (validates the graph, returns a runnable)
-
-    The compiled graph is a standard Python callable:
-      result = compiled_graph.invoke(initial_state)
     """
-    logger.info("Building retrieval graph")
+    logger.info("Building retrieval graph (Phase 3)")
 
     # ── 1. Create the graph ───────────────────────────────────────────────────
-    # StateGraph(GraphState) tells LangGraph which TypedDict to use for state.
-    # LangGraph validates that nodes return keys defined in GraphState.
     workflow = StateGraph(GraphState)
 
     # ── 2. Register nodes ─────────────────────────────────────────────────────
-    # add_node("name", function)
-    # The function signature must be: func(state: GraphState) -> dict
+    workflow.add_node("rewrite", rewrite)
     workflow.add_node("retrieve", retrieve)
     workflow.add_node("generate", generate)
 
-    # ── 3. Define edges (execution order) ─────────────────────────────────────
-    # START is a special built-in entry point marker
-    # END is a special built-in exit point marker
-
-    workflow.add_edge(START, "retrieve")   # First node to run
+    # ── 3. Define edges ───────────────────────────────────────────────────────
+    workflow.add_edge(START, "rewrite")      # Phase 3: rewrite is the entry point
+    workflow.add_edge("rewrite", "retrieve")
     workflow.add_edge("retrieve", "generate")
-    workflow.add_edge("generate", END)     # Last node to run
+    workflow.add_edge("generate", END)
 
     # ── 4. Compile ────────────────────────────────────────────────────────────
-    # compile() validates the graph structure and returns a CompiledStateGraph
-    # The compiled graph can be invoked like a regular function
     compiled = workflow.compile()
 
     logger.info(
         "Retrieval graph compiled",
-        extra={"nodes": ["retrieve", "generate"], "flow": "START→retrieve→generate→END"},
+        extra={
+            "nodes": ["rewrite", "retrieve", "generate"],
+            "flow": "START→rewrite→retrieve→generate→END",
+        },
     )
 
     return compiled
@@ -90,30 +76,38 @@ def get_retrieval_graph():
     """
     Returns the compiled retrieval graph.
     Uses @lru_cache so the graph is built only once per process.
-    Building the graph is cheap, but caching it is clean practice.
     """
     return build_retrieval_graph()
 
 
-def create_initial_state(question: str) -> GraphState:
+def create_initial_state(
+    question: str,
+    chat_history: list | None = None,
+) -> GraphState:
     """
     Creates the initial state dict to pass into graph.invoke().
 
-    All fields must be present in the initial state — LangGraph
-    requires the TypedDict to be fully initialized before the first node runs.
+    All fields must be present — LangGraph requires the TypedDict to be fully
+    initialised before the first node runs.
 
     Args:
-        question: The user's question string.
+        question:     The user's question string.
+        chat_history: List of {"role": str, "content": str} dicts from
+                      ConversationManager.  Pass None (or omit) for Phase 2
+                      backward compatibility.
 
     Returns:
-        A fully-initialized GraphState with empty/default values for all fields
-        except 'question', which is set to the provided value.
+        A fully-initialised GraphState.
     """
     return GraphState(
+        # Phase 2 fields (unchanged)
         question=question,
         retrieved_docs=[],
         context="",
         sources=[],
         answer="",
         error=None,
+        # Phase 3 fields
+        retrieval_query=question,       # Default: same as question; rewrite node overrides
+        chat_history=chat_history or [],
     )

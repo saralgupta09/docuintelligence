@@ -1,7 +1,7 @@
 """
 services/llm_service.py
 ------------------------
-Wraps Google Gemini 2.5 Flash for answer generation.
+Wraps Google Gemini 2.5 Flash for answer generation and query rewriting.
 
 SDK: google-genai (new official SDK, not deprecated google-generativeai)
 
@@ -12,12 +12,17 @@ Free tier (as of 2025):
   Input token limit:  1,048,576 per request
   Output token limit: 65,536
 
+Phase 3 note on quota:
+  Each /ask call now makes up to 2 Gemini calls (rewrite + generate) when
+  ENABLE_QUERY_REWRITING=True.  Effective daily capacity drops to ~250 ask
+  requests on the free tier.  Set ENABLE_QUERY_REWRITING=False to halve
+  API usage during heavy testing.
+
 Get your free API key at: https://aistudio.google.com/app/apikey
 No credit card required.
-
-If you hit the 500 req/day limit during heavy testing, set in .env:
-  GEMINI_MODEL=gemini-1.5-flash   (also free, very capable)
 """
+
+from typing import List
 
 from google import genai
 from google.genai import types
@@ -27,19 +32,33 @@ from utils.logger import get_logger, Timer
 
 logger = get_logger(__name__)
 
-# System instruction: defines the model's role and grounding rules.
-SYSTEM_INSTRUCTION = """You are DocuIntel, an AI assistant that answers questions \
-strictly based on the provided document context.
+# ── System instructions ───────────────────────────────────────────────────────
+GENERATE_SYSTEM_INSTRUCTION = """You are DocuIntel, an AI assistant that answers questions using document context and conversation history.
 
 Rules:
-1. Answer ONLY using information present in the context blocks below.
-2. If the context does not contain enough information, say clearly: \
+1. Use document context as the primary source of factual information.
+2. Use conversation history to resolve references, pronouns, follow-up questions, and conversational continuity.
+3. If the user refers to previous answers (e.g. "the second point", "that", "it", "the earlier one"), use conversation history to determine what they mean.
+4. Never fabricate facts, statistics, names, or dates.
+5. If insufficient information exists in both document context and conversation history, say clearly:
 "I don't have enough information in the provided documents to answer this question."
-3. Never fabricate facts, statistics, names, or dates.
-4. When referencing specific information, mention the source document and page \
-(e.g., "According to report.pdf, page 3...").
-5. Be concise and direct.
-6. If multiple sources support the answer, synthesize them into a unified response."""
+6. When referencing specific information, mention source document and page when available.
+7. Be concise and direct.
+8. If multiple sources support an answer, synthesize them naturally.
+"""
+REWRITE_SYSTEM_INSTRUCTION = """You are a search query optimizer for a document retrieval system.
+
+Your task: Convert the user's question into a concise, self-contained search query that will \
+retrieve the most relevant document chunks.
+
+Rules:
+1. Output ONLY the rewritten query. No explanation, no preamble, no quotes.
+2. Resolve pronouns and references using the conversation history \
+   (e.g., "it", "that", "the second one" → the specific term they refer to).
+3. Make the query standalone — it should make sense without the conversation history.
+4. Keep it short: 5-15 words is ideal. Preserve key terms exactly.
+5. If the question is already a clear standalone query, return it unchanged.
+6. NEVER answer the question — only rewrite it as a search query."""
 
 
 def format_context(retrieved_docs: list) -> str:
@@ -76,14 +95,29 @@ def format_context(retrieved_docs: list) -> str:
     return "\n\n---\n\n".join(parts)
 
 
-def build_prompt(question: str, context: str) -> str:
+def build_prompt(question: str, context: str, chat_history_str: str = "") -> str:
     """
-    Assembles the user message: context blocks + question.
+    Assembles the user message: conversation history + context blocks + question.
 
     Context-first ordering produces more grounded answers because
     the model processes the evidence before seeing the question.
+
+    Args:
+        question:         The original user question.
+        context:          Formatted retrieved chunks string.
+        chat_history_str: Pre-formatted conversation history (may be empty).
     """
-    return (
+    parts = []
+
+    if chat_history_str.strip():
+        parts.append(
+            f"CONVERSATION HISTORY (use this for conversational continuity and reference resolution):\n"
+            f"{'=' * 60}\n"
+            f"{chat_history_str}\n"
+            f"{'=' * 60}\n"
+        )
+
+    parts.append(
         f"DOCUMENT CONTEXT:\n"
         f"{'=' * 60}\n"
         f"{context}\n"
@@ -92,10 +126,40 @@ def build_prompt(question: str, context: str) -> str:
         f"ANSWER:"
     )
 
+    return "\n".join(parts)
+
+
+def build_rewrite_prompt(question: str, chat_history: List[dict]) -> str:
+    """
+    Builds the prompt for the query rewriting call.
+
+    Includes the last few turns of conversation history (up to 3 turns)
+    so the model can resolve anaphoric references.
+
+    Args:
+        question:     The current user question.
+        chat_history: List of {"role": str, "content": str} dicts.
+    """
+    # Only include the last 3 turns (6 messages) for the rewrite context
+    recent = chat_history[-6:] if len(chat_history) > 6 else chat_history
+
+    lines = []
+    if recent:
+        lines.append("Recent conversation:")
+        for turn in recent:
+            role_label = "User" if turn["role"] == "user" else "Assistant"
+            lines.append(f"  {role_label}: {turn['content']}")
+        lines.append("")
+
+    lines.append(f"Current question: {question}")
+    lines.append("\nRewritten search query:")
+
+    return "\n".join(lines)
+
 
 class LLMService:
     """
-    Wraps Gemini 2.5 Flash for grounded document question-answering.
+    Wraps Gemini 2.5 Flash for grounded document Q&A and query rewriting.
     Client is initialized lazily on first use.
     """
 
@@ -118,13 +182,16 @@ class LLMService:
         self,
         question: str,
         context: str,
+        chat_history_str: str = "",
     ) -> str:
         """
         Generates a grounded answer using Gemini and the retrieved context.
 
         Args:
-            question: The user's question.
-            context:  Formatted context string (retrieved chunks).
+            question:         The user's original question.
+            context:          Formatted context string (retrieved chunks).
+            chat_history_str: Pre-formatted conversation history string.
+                              Pass "" if no history (Phase 2 backward compat).
 
         Returns:
             LLM response text.
@@ -132,15 +199,16 @@ class LLMService:
         Raises:
             RuntimeError: If the Gemini API key is missing or API call fails.
         """
-        prompt = build_prompt(question, context)
+        prompt = build_prompt(question, context, chat_history_str)
 
         logger.info(
-            "Sending request to Gemini",
+            "Sending generate request to Gemini",
             extra={
                 "model": settings.GEMINI_MODEL,
                 "context_chars": len(context),
                 "prompt_chars": len(prompt),
                 "question_preview": question[:80],
+                "has_history": bool(chat_history_str.strip()),
             },
         )
 
@@ -151,13 +219,13 @@ class LLMService:
                     model=settings.GEMINI_MODEL,
                     contents=prompt,
                     config=types.GenerateContentConfig(
-                        system_instruction=SYSTEM_INSTRUCTION,
+                        system_instruction=GENERATE_SYSTEM_INSTRUCTION,
                         temperature=0.1,        # Low = factual, less creative
                         max_output_tokens=1024,
                     ),
                 )
         except Exception as e:
-            logger.error("Gemini API call failed", extra={"error": str(e)})
+            logger.error("Gemini generate API call failed", extra={"error": str(e)})
             raise RuntimeError(f"LLM generation failed: {str(e)}") from e
 
         answer = response.text or ""
@@ -178,6 +246,68 @@ class LLMService:
         )
 
         return answer.strip()
+
+    def rewrite_query(
+        self,
+        question: str,
+        chat_history: List[dict],
+    ) -> str:
+        """
+        Rewrites the user's question into a search-optimised standalone query.
+
+        Uses a lightweight Gemini call with max_output_tokens=100 (the typical
+        rewritten query is 5-15 tokens).  This keeps the call cheap and fast.
+
+        Args:
+            question:     The user's original question.
+            chat_history: List of {"role": str, "content": str} dicts.
+
+        Returns:
+            Rewritten query string (may be identical to question if no rewrite
+            was needed).
+
+        Raises:
+            RuntimeError: If the Gemini API key is missing or API call fails.
+        """
+        prompt = build_rewrite_prompt(question, chat_history)
+
+        logger.info(
+            "Sending rewrite request to Gemini",
+            extra={
+                "model": settings.GEMINI_MODEL,
+                "question_preview": question[:80],
+                "history_msgs": len(chat_history),
+            },
+        )
+
+        try:
+            with Timer() as t:
+                client = self._get_client()
+                response = client.models.generate_content(
+                    model=settings.GEMINI_MODEL,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        system_instruction=REWRITE_SYSTEM_INSTRUCTION,
+                        temperature=0.0,          # Deterministic for rewriting
+                        max_output_tokens=100,    # Rewritten queries are short
+                    ),
+                )
+        except Exception as e:
+            logger.error("Gemini rewrite API call failed", extra={"error": str(e)})
+            raise RuntimeError(f"Query rewrite failed: {str(e)}") from e
+
+        rewritten = (response.text or "").strip()
+
+        logger.info(
+            "Query rewrite complete",
+            extra={
+                "original": question[:60],
+                "rewritten": rewritten[:60],
+                "elapsed_ms": t.elapsed_ms,
+            },
+        )
+
+        return rewritten
 
 
 _llm_service: LLMService | None = None

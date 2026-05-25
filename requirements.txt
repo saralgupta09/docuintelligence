@@ -1,5 +1,5 @@
 # ============================================================
-# DocuIntel — Requirements (Phase 1 + Phase 2)
+# DocuIntel — Requirements (Phase 1 + Phase 2 + Phase 3)
 # ============================================================
 # Install:
 # pip install -r requirements.txt
@@ -39,9 +39,12 @@ torch==2.3.1
 # ── Vector Database ──────────────────────────────────────────
 chromadb==0.5.3
 
-# ── Gemini (Phase 2) ─────────────────────────────────────────
+# ── Gemini ───────────────────────────────────────────────────
 google-genai==1.16.1
 
-# ── Future Phases (Do NOT install now) ──────────────────────
-# rank-bm25==0.2.2
+# ── Phase 3: Hybrid Retrieval ───────────────────────────────
+rank-bm25==0.2.2
+numpy>=1.26.0
+
+# ── Future Phases ────────────────────────────────────────────
 # Pillow==10.3.0

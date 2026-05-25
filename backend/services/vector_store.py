@@ -220,3 +220,81 @@ def get_vector_store_service() -> VectorStoreService:
     if _vector_store_service is None:
         _vector_store_service = VectorStoreService()
     return _vector_store_service
+
+    def get_all_documents(self) -> list:
+        """
+        Returns ALL stored chunks as a list of dicts.
+
+        Used exclusively by BM25Service to build its keyword index.
+        Each dict has the same shape as a raw_doc entry in the retrieve node:
+          {
+            "chunk_id": str,
+            "text":     str,
+            "filename": str,
+            "page_num": int,
+            "doc_id":   str,
+            "metadata": dict,
+          }
+
+        ChromaDB's .get() without a 'where' filter returns every document in
+        the collection.  We pass include=["documents", "metadatas"] to avoid
+        loading embeddings (we don't need them for BM25).
+
+        Returns [] if the collection is empty or on any error.
+        """
+        try:
+            collection = self._get_collection()
+            count = collection.count()
+
+            if count == 0:
+                return []
+
+            # Fetch all documents — no filter, no embeddings
+            raw = collection.get(include=["documents", "metadatas"])
+
+            ids = raw.get("ids", [])
+            texts = raw.get("documents", []) or []
+            metadatas = raw.get("metadatas", []) or []
+
+            docs = []
+            for chunk_id, text, metadata in zip(ids, texts, metadatas):
+                docs.append(
+                    {
+                        "chunk_id": chunk_id,
+                        "text": text or "",
+                        "filename": metadata.get("filename", "unknown"),
+                        "page_num": int(metadata.get("page_num", 0)),
+                        "doc_id": metadata.get("doc_id", "unknown"),
+                        "metadata": metadata,
+                    }
+                )
+
+            logger.info(
+                "get_all_documents complete",
+                extra={"total": len(docs)},
+            )
+
+            return docs
+
+        except Exception as e:
+            logger.error(
+                "get_all_documents failed",
+                extra={"error": str(e)},
+            )
+            return []
+
+    def delete_document(self, doc_id: str) -> int:
+        """
+        Deletes all chunks for a given doc_id.
+        Returns the number of chunks deleted.
+        """
+        collection = self._get_collection()
+        before = collection.count()
+        collection.delete(where={"doc_id": {"$eq": doc_id}})
+        after = collection.count()
+        deleted = before - after
+        logger.info(
+            "Document deleted from ChromaDB",
+            extra={"doc_id": doc_id, "chunks_deleted": deleted},
+        )
+        return deleted

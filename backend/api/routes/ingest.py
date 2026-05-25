@@ -32,6 +32,7 @@ from ingestion.pdf_processor import extract_text_from_pdf, PDFDocument
 from ingestion.chunker import chunk_pdf_document
 from services.embedding_service import get_embedding_service
 from services.vector_store import get_vector_store_service
+from services.bm25_service import get_bm25_service   # Phase 3: mark stale after ingest
 from utils.logger import get_logger, Timer
 
 logger = get_logger(__name__)
@@ -221,7 +222,20 @@ def ingest_pdf(file: UploadFile = File(..., description="PDF file to ingest")) -
         },
     )
 
-    # ── Step 7: Build response ────────────────────────────────────────────────
+    # ── Step 7: Mark BM25 index stale ────────────────────────────────────────
+    # The BM25 index must be rebuilt to include the new chunks.
+    # mark_stale() is cheap (just sets a flag).  The actual rebuild happens
+    # lazily on the next /ask call that triggers a retrieval.
+    try:
+        get_bm25_service().mark_stale()
+    except Exception as e:
+        # Never let BM25 housekeeping break a successful ingest
+        logger.warning(
+            "BM25 mark_stale failed — index may be stale until next restart",
+            extra={"error": str(e)},
+        )
+
+    # ── Step 8: Build response ────────────────────────────────────────────────
     overall_timer.__exit__(None, None, None)
 
     doc_id = chunks[0].metadata["doc_id"]

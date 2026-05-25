@@ -14,7 +14,7 @@ from pydantic import Field
 class Settings(BaseSettings):
     # ── App ──────────────────────────────────────────────────────────────────
     APP_NAME: str = "DocuIntel"
-    APP_VERSION: str = "0.2.0"
+    APP_VERSION: str = "0.3.0"
     DEBUG: bool = False
     LOG_LEVEL: str = "INFO"
 
@@ -37,13 +37,37 @@ class Settings(BaseSettings):
     # One collection for the entire app (documents filtered by metadata)
     CHROMA_COLLECTION_NAME: str = "documents"
 
-    # ── Retrieval (Phase 2) ──────────────────────────────────────────────────
-    RETRIEVAL_TOP_K: int = 5           # Chunks retrieved per question
+    # ── Retrieval (Phase 2 — preserved for backward compat) ──────────────────
+    RETRIEVAL_TOP_K: int = 5           # Chunks retrieved per question (legacy)
+
+    # ── Retrieval (Phase 3 — hybrid) ─────────────────────────────────────────
+    # VECTOR_TOP_K: how many candidates to pull from ChromaDB before merging
+    VECTOR_TOP_K: int = 10
+    # BM25_TOP_K: how many candidates to score via BM25 before merging
+    BM25_TOP_K: int = 10
+    # Weights for the hybrid score: SEMANTIC_WEIGHT + BM25_WEIGHT should = 1.0
+    # Higher SEMANTIC_WEIGHT → favours conceptual similarity
+    # Higher BM25_WEIGHT → favours exact keyword matches
+    SEMANTIC_WEIGHT: float = 0.6
+    BM25_WEIGHT: float = 0.4
 
     # ── LLM (Phase 2) ────────────────────────────────────────────────────────
     # Free tier: 1,500 requests/day | Get key: https://aistudio.google.com/app/apikey
     GEMINI_API_KEY: str = ""
     GEMINI_MODEL: str = "gemini-2.5-flash"
+
+    # ── Query rewriting (Phase 3) ─────────────────────────────────────────────
+    # When True: a lightweight Gemini call converts vague questions into
+    # search-friendly standalone queries before retrieval.
+    # When False: retrieval_query = question (pass-through, zero extra API calls).
+    # Toggle off to conserve free-tier quota: ENABLE_QUERY_REWRITING=false
+    ENABLE_QUERY_REWRITING: bool = True
+
+    # ── Conversation memory (Phase 3) ─────────────────────────────────────────
+    # How many prior turns to inject into the generate prompt.
+    # Each "turn" = one user question + one assistant answer.
+    # Higher values → better continuity, higher token cost.
+    MAX_MEMORY_TURNS: int = 5
 
     # ── Future phases ─────────────────────────────────────────────────────────
     RERANK_TOP_N: int = 5

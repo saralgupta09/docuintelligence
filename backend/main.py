@@ -2,7 +2,7 @@
 main.py
 -------
 FastAPI application entry point for DocuIntel backend.
-Phase 2: adds the /ask endpoint and LangGraph orchestration.
+Phase 3: Hybrid retrieval (BM25 + vector), query rewriting, conversation memory.
 """
 
 from contextlib import asynccontextmanager
@@ -24,7 +24,7 @@ logger = get_logger(__name__)
 async def lifespan(app: FastAPI):
     """
     Runs once at startup before requests are accepted.
-    Clean place to initialize resources (directories, connections, etc.)
+    Initialises all services so the first request isn't slow.
     """
     logger.info(
         "Starting DocuIntel backend",
@@ -33,6 +33,10 @@ async def lifespan(app: FastAPI):
             "embedding_model": settings.EMBEDDING_MODEL_NAME,
             "llm_model": settings.GEMINI_MODEL,
             "gemini_key_set": bool(settings.GEMINI_API_KEY),
+            "query_rewriting": settings.ENABLE_QUERY_REWRITING,
+            "max_memory_turns": settings.MAX_MEMORY_TURNS,
+            "semantic_weight": settings.SEMANTIC_WEIGHT,
+            "bm25_weight": settings.BM25_WEIGHT,
         },
     )
 
@@ -45,7 +49,18 @@ async def lifespan(app: FastAPI):
     get_retrieval_graph()
     logger.info("LangGraph retrieval graph compiled and ready")
 
-    logger.info("DocuIntel Phase 2 ready — waiting for requests")
+    # Initialise ConversationManager so it's ready for the first request
+    from memory.conversation_manager import get_conversation_manager
+    conversation_manager = get_conversation_manager()
+    logger.info(
+        "ConversationManager ready",
+        extra={
+            "max_turns": settings.MAX_MEMORY_TURNS,
+            "active_sessions": conversation_manager.session_count(),
+        },
+    )
+
+    logger.info("DocuIntel Phase 3 ready — waiting for requests")
 
     yield  # Application runs between yield and the code below
 
@@ -60,7 +75,8 @@ app = FastAPI(
     version=settings.APP_VERSION,
     description=(
         "Multimodal AI Document Intelligence System\n\n"
-        "Phase 2: LangGraph RAG — question → retrieve → Gemini answer"
+        "Phase 3: Hybrid retrieval (BM25 + vector), query rewriting, "
+        "multi-turn conversation memory."
     ),
     docs_url="/docs",
     redoc_url="/redoc",
@@ -69,7 +85,6 @@ app = FastAPI(
 
 
 # ── CORS Middleware ────────────────────────────────────────────────────────────
-# Allows the Streamlit frontend (localhost:8501) to call the backend (localhost:8000)
 
 app.add_middleware(
     CORSMiddleware,
@@ -83,11 +98,7 @@ app.add_middleware(
 # ── Routers ────────────────────────────────────────────────────────────────────
 
 app.include_router(ingest.router, prefix="/api/v1")
-app.include_router(ask.router, prefix="/api/v1")       # Phase 2: NEW
-
-# Future phases will add:
-# app.include_router(chat.router, prefix="/api/v1")
-# app.include_router(documents.router, prefix="/api/v1")
+app.include_router(ask.router, prefix="/api/v1")
 
 
 # ── Health Check ───────────────────────────────────────────────────────────────
@@ -95,11 +106,12 @@ app.include_router(ask.router, prefix="/api/v1")       # Phase 2: NEW
 @app.get("/health", summary="Health check", tags=["System"], response_model=Dict[str, Any])
 def health_check() -> Dict[str, Any]:
     """
-    Returns system status and ChromaDB stats.
-    Use this to verify the server is running before testing ingestion.
+    Returns system status, ChromaDB stats, BM25 index size, and memory stats.
+    Use this to verify all Phase 3 subsystems are running.
     """
     from services.vector_store import get_vector_store_service
-    from pathlib import Path
+    from services.bm25_service import get_bm25_service
+    from memory.conversation_manager import get_conversation_manager
 
     try:
         vector_store = get_vector_store_service()
@@ -109,15 +121,34 @@ def health_check() -> Dict[str, Any]:
         db_stats = {}
         db_status = f"error: {str(e)}"
 
+    try:
+        bm25_service = get_bm25_service()
+        bm25_index_size = bm25_service.index_size()
+    except Exception:
+        bm25_index_size = -1
+
+    try:
+        conv_manager = get_conversation_manager()
+        active_sessions = conv_manager.session_count()
+    except Exception:
+        active_sessions = -1
+
     return {
         "status": "ok",
         "app": settings.APP_NAME,
         "version": settings.APP_VERSION,
-        "phase": "2 - LangGraph RAG",
+        "phase": "3 - Hybrid RAG + Memory",
         "embedding_model": settings.EMBEDDING_MODEL_NAME,
         "llm_model": settings.GEMINI_MODEL,
         "gemini_key_configured": bool(settings.GEMINI_API_KEY),
+        "query_rewriting_enabled": settings.ENABLE_QUERY_REWRITING,
+        "hybrid_weights": {
+            "semantic": settings.SEMANTIC_WEIGHT,
+            "bm25": settings.BM25_WEIGHT,
+        },
         "vector_db": {"status": db_status, **db_stats},
+        "bm25_index": {"documents_indexed": bm25_index_size},
+        "memory": {"active_sessions": active_sessions},
     }
 
 
