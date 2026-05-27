@@ -1,17 +1,24 @@
 /**
  * hooks/useDocuments.js
  * ---------------------
- * Feature 2 additions:
- *   previewDocId  — the doc_id whose PDF is currently open in the preview panel
- *   openPreview(id)  — opens the preview for a doc_id
- *   closePreview()   — closes the preview panel
+ * Deletion feature addition: removeDocument(docId)
  *
- * Feature 1 fields (selectedDocId, selectDoc, clearSelection) are unchanged.
- * All other existing fields are unchanged.
+ *   Calls the DELETE endpoint, then updates local state in a single pass:
+ *   - Filters the document out of the documents array.
+ *   - Clears selectedDocId if it matched the deleted doc.
+ *   - Clears previewDocId if it matched the deleted doc.
+ *
+ *   Uses functional setState so none of the current state values need to
+ *   appear in the useCallback dependency array, avoiding stale-closure bugs.
+ *
+ *   Throws on API failure so the caller (DocumentList) can display the error.
+ *
+ * All Feature 1 (selectedDocId / selectDoc / clearSelection) and
+ * Feature 2 (previewDocId / openPreview / closePreview) fields are unchanged.
  */
 
 import { useState, useEffect, useCallback } from 'react'
-import { fetchDocuments } from '../api/client'
+import { fetchDocuments, deleteDocument } from '../api/client'
 
 export function useDocuments() {
   const [documents, setDocuments] = useState([])
@@ -62,6 +69,23 @@ export function useDocuments() {
     })
   }, [])
 
+  // Deletion feature:
+  // Uses functional updaters so this callback never goes stale — it does not
+  // close over selectedDocId or previewDocId directly.
+  const removeDocument = useCallback(async (docId) => {
+    // API call first — if it throws, state is left untouched.
+    await deleteDocument(docId)
+
+    // Remove the doc from the list.
+    setDocuments((prev) => prev.filter((d) => d.doc_id !== docId))
+
+    // Clear selection if the deleted doc was selected.
+    setSelectedDocId((prev) => (prev === docId ? null : prev))
+
+    // Close preview panel if the deleted doc was being previewed.
+    setPreviewDocId((prev) => (prev === docId ? null : prev))
+  }, []) // empty deps — all updates use functional form
+
   // Feature 1
   const selectDoc = useCallback((docId) => {
     setSelectedDocId(docId)
@@ -95,5 +119,7 @@ export function useDocuments() {
     previewDocId,
     openPreview,
     closePreview,
+    // Deletion feature
+    removeDocument,
   }
 }

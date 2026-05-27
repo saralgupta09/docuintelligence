@@ -1,8 +1,8 @@
 /**
  * components/Sidebar.jsx
  * -----------------------
- * Feature 2 change: forwards onOpenPreview from the documents hook
- * down to DocumentList.
+ * Deletion feature change: forwards onDeleteDoc={documents.removeDocument}
+ * to DocumentList.
  * Everything else is unchanged.
  */
 
@@ -39,6 +39,7 @@ export default function Sidebar({ backendStatus, documents, onUploaded }) {
         onSelectDoc={documents.selectDoc}
         onClearSelection={documents.clearSelection}
         onOpenPreview={documents.openPreview}
+        onDeleteDoc={documents.removeDocument}
       />
     </aside>
   )
