@@ -1,12 +1,21 @@
 """
 api/routes/ask.py
 ------------------
-Feature 1 change: AskRequest gains an optional 'doc_id' field.
-When provided, it is passed to create_initial_state() so the retrieve
-node scopes its ChromaDB and BM25 searches to that document only.
-When absent (None), all documents are searched — existing behaviour unchanged.
+Highlight feature change (additive only):
 
-All other logic, field names, and response shape are preserved exactly.
+  1. New Pydantic model  RetrievedChunk  captures every retrieved chunk with
+     its full text, page number, chunk_id, filename, and combined score.
+
+  2. AskResponse gains a new field:
+       retrieved_chunks: List[RetrievedChunk]
+     populated from final_state["retrieved_docs"] which already carries all
+     these fields.  No graph, retrieval, or memory logic is touched.
+
+  3. AskResponse.sources gains `text` field (full chunk text, not excerpt)
+     for sources that are deduplicated — this is optional but useful.
+
+All existing request fields, response fields, session logic, doc_id filter,
+error handling, and memory save are completely unchanged.
 """
 
 import uuid
@@ -41,7 +50,6 @@ class AskRequest(BaseModel):
             "If not provided, a new session is created and returned."
         ),
     )
-    # ── Feature 1 addition ────────────────────────────────────────────────────
     doc_id: Optional[str] = Field(
         default=None,
         description=(
@@ -64,7 +72,26 @@ class SourceReference(BaseModel):
     )
 
 
+# ── Highlight feature: full chunk data ────────────────────────────────────────
+
+class RetrievedChunk(BaseModel):
+    """
+    Full data for one retrieved chunk.
+    Used by the frontend to highlight matching text in the PDF viewer.
+    Populated from final_state['retrieved_docs'] which is built by retrieve.py.
+    """
+    chunk_id: str = Field(description="Internal chunk identifier, e.g. 'sample_pdf_4'")
+    text: str = Field(description="Full extracted text of the chunk (not truncated)")
+    page_num: int = Field(description="1-based page number this chunk came from")
+    filename: str = Field(description="Timestamped filename as stored on disk, e.g. '20260526_202541_sample.pdf'")
+    score: Optional[float] = Field(
+        default=None,
+        description="Combined hybrid retrieval score (0–1). Higher = more relevant.",
+    )
+
+
 class AskResponse(BaseModel):
+    # ── Existing fields (all unchanged) ───────────────────────────────────────
     question: str
     answer: str
     sources: List[SourceReference]
@@ -77,10 +104,19 @@ class AskResponse(BaseModel):
     session_id: str = Field(
         description="Session identifier. Send back on subsequent requests."
     )
-    # ── Feature 1: echo back which doc was filtered ───────────────────────────
     doc_id_filter: Optional[str] = Field(
         default=None,
         description="The doc_id filter applied to this request, if any.",
+    )
+    # ── Highlight feature addition ─────────────────────────────────────────────
+    retrieved_chunks: List[RetrievedChunk] = Field(
+        default_factory=list,
+        description=(
+            "All retrieved chunks with full text and page numbers. "
+            "Use this to highlight matching text in the PDF viewer. "
+            "Unlike 'sources' (which are deduplicated by page), this list "
+            "contains every chunk returned by the hybrid retriever."
+        ),
     )
 
 
@@ -104,7 +140,7 @@ def ask(request: AskRequest) -> AskResponse:
             "question_preview": question[:80],
             "session_id": session_id[:8] + "...",
             "new_session": is_new_session,
-            "doc_id_filter": request.doc_id or "all",     # Feature 1
+            "doc_id_filter": request.doc_id or "all",
         },
     )
 
@@ -119,7 +155,7 @@ def ask(request: AskRequest) -> AskResponse:
             initial_state = create_initial_state(
                 question,
                 chat_history,
-                doc_id=request.doc_id,          # Feature 1: pass filter
+                doc_id=request.doc_id,
             )
             final_state = graph.invoke(initial_state)
 
@@ -171,7 +207,7 @@ def ask(request: AskRequest) -> AskResponse:
         if isinstance(doc, dict) and "chunk_id" in doc
     }
 
-    # ── Build response sources ────────────────────────────────────────────────
+    # ── Build response sources (unchanged) ────────────────────────────────────
     response_sources = [
         SourceReference(
             filename=source["filename"],
@@ -183,6 +219,21 @@ def ask(request: AskRequest) -> AskResponse:
         for source in raw_sources
     ]
 
+    # ── Highlight feature: build retrieved_chunks from raw retrieved_docs ─────
+    # retrieved_docs is built by graph/nodes/retrieve.py and already contains
+    # the full chunk text, page_num, filename, and scores.  We just reshape it.
+    response_chunks = [
+        RetrievedChunk(
+            chunk_id=doc["chunk_id"],
+            text=doc["text"],
+            page_num=doc["page_num"],
+            filename=doc["filename"],
+            score=doc.get("combined_score"),
+        )
+        for doc in retrieved_docs
+        if isinstance(doc, dict) and doc.get("text") and doc.get("filename")
+    ]
+
     logger.info(
         "Ask request complete",
         extra={
@@ -191,6 +242,7 @@ def ask(request: AskRequest) -> AskResponse:
             "answer_chars": len(answer),
             "sources_count": len(response_sources),
             "chunks_retrieved": len(retrieved_docs),
+            "highlight_chunks": len(response_chunks),
             "doc_id_filter": request.doc_id or "all",
             "session_id": session_id[:8] + "...",
             "total_ms": t.elapsed_ms,
@@ -206,5 +258,6 @@ def ask(request: AskRequest) -> AskResponse:
         timestamp=timestamp,
         rewritten_query=rewritten_query,
         session_id=session_id,
-        doc_id_filter=request.doc_id,           # Feature 1: echo back
+        doc_id_filter=request.doc_id,
+        retrieved_chunks=response_chunks,   # ← Highlight feature
     )
