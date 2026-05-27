@@ -1,8 +1,9 @@
 /**
  * components/Sidebar.jsx
  * -----------------------
- * Left sidebar containing upload section and document list.
- * Fixed width on desktop, collapsible on mobile.
+ * Feature 1 change: forwards selectDoc, clearSelection, and selectedDocId
+ * from the documents hook down to DocumentList.
+ * Nothing else changes.
  */
 
 import React from 'react'
@@ -34,6 +35,9 @@ export default function Sidebar({ backendStatus, documents, onUploaded }) {
         loading={documents.loading}
         error={documents.error}
         onRefresh={documents.refresh}
+        selectedDocId={documents.selectedDocId}
+        onSelectDoc={documents.selectDoc}
+        onClearSelection={documents.clearSelection}
       />
     </aside>
   )

@@ -1,15 +1,16 @@
 /**
  * components/ChatArea.jsx
  * ------------------------
- * Main chat interface:
- *  - Scrollable message list with auto-scroll to bottom
- *  - Empty state with suggestions
- *  - Loading indicator
- *  - ChatInput at the bottom
+ * Feature 1 change: accepts a 'selectedDoc' prop and shows a small
+ * "Searching: <filename>" pill above the chat input when a document
+ * is selected.
+ *
+ * All other logic — auto-scroll, empty state, suggestions, scroll button,
+ * loading indicator — is completely unchanged.
  */
 
 import React, { useEffect, useRef, useCallback } from 'react'
-import { MessageSquare, Cpu, FileSearch, Layers, ArrowDown } from 'lucide-react'
+import { MessageSquare, Cpu, FileSearch, Layers, ArrowDown, FileText, X } from 'lucide-react'
 import MessageBubble from './MessageBubble'
 import LoadingAnimation from './LoadingAnimation'
 import ChatInput from './ChatInput'
@@ -27,17 +28,16 @@ export default function ChatArea({
   onSend,
   backendStatus,
   hasDocuments,
+  selectedDoc,        // Feature 1: the currently selected document object (or null)
 }) {
   const bottomRef = useRef(null)
   const containerRef = useRef(null)
   const [showScrollButton, setShowScrollButton] = React.useState(false)
 
-  // Auto-scroll when new messages arrive
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isLoading])
 
-  // Show scroll-to-bottom button when user has scrolled up
   const handleScroll = useCallback(() => {
     const el = containerRef.current
     if (!el) return
@@ -87,12 +87,23 @@ export default function ChatArea({
         </button>
       )}
 
+      {/* Feature 1: selected document context strip */}
+      {selectedDoc && (
+        <div className="mx-4 mb-1 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-ember-500/10 border border-ember-500/20 text-[11px] text-ember-300">
+          <FileText className="w-3 h-3 shrink-0 text-ember-400" />
+          <span className="truncate flex-1">
+            Searching: <span className="font-medium">{selectedDoc.filename}</span>
+          </span>
+        </div>
+      )}
+
       {/* Input */}
       <ChatInput
         onSend={onSend}
         isLoading={isLoading}
         backendOnline={backendStatus.isOnline}
         disabled={!hasDocuments && messages.length === 0}
+        selectedDoc={selectedDoc}
       />
     </div>
   )
@@ -101,7 +112,6 @@ export default function ChatArea({
 function EmptyState({ backendOnline, hasDocuments, onSuggestion }) {
   return (
     <div className="flex flex-col items-center justify-center min-h-full gap-8 py-12">
-      {/* Logo mark */}
       <div className="flex flex-col items-center gap-4">
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-ember-400/20 to-ember-600/20 border border-ember-500/20 flex items-center justify-center">
           <Cpu className="w-8 h-8 text-ember-400" />
@@ -118,21 +128,14 @@ function EmptyState({ backendOnline, hasDocuments, onSuggestion }) {
         </div>
       </div>
 
-      {/* Suggestions — only show when ready */}
       {backendOnline && hasDocuments && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full max-w-lg">
           {SUGGESTIONS.map((s, i) => (
-            <SuggestionCard
-              key={i}
-              icon={s.icon}
-              text={s.text}
-              onClick={() => onSuggestion(s.text)}
-            />
+            <SuggestionCard key={i} icon={s.icon} text={s.text} onClick={() => onSuggestion(s.text)} />
           ))}
         </div>
       )}
 
-      {/* Backend offline warning */}
       {!backendOnline && (
         <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl px-5 py-4 max-w-sm text-center">
           <p className="text-rose-300 text-sm font-medium mb-1">Backend Not Running</p>

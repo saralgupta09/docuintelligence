@@ -4,23 +4,15 @@ services/hybrid_retrieval_service.py
 Runs vector search and BM25 search in parallel, normalises both score
 distributions to [0, 1], then merges them using configurable weights.
 
-Hybrid score formula:
-    hybrid_score = SEMANTIC_WEIGHT * vector_sim + BM25_WEIGHT * bm25_norm
+Feature 1 change: retrieve() accepts an optional doc_id parameter.
+  - Vector search: passes where={"doc_id": {"$eq": doc_id}} to ChromaDB
+    when doc_id is provided. ChromaDB filters before scoring.
+  - BM25 search: results are post-filtered to the same doc_id.
+  - When doc_id is None (default), both searches run unfiltered.
+    This is the existing behaviour — zero regression.
 
-where:
-  vector_sim  = 1 - cosine_distance   (ChromaDB returns distances, not sims)
-  bm25_norm   = bm25_score / max_bm25_score   (linear normalisation)
-
-Both weights are configured in config.py / .env.
-Default: SEMANTIC_WEIGHT=0.6, BM25_WEIGHT=0.4.
-
-Fallback behaviour:
-  - If BM25 index is empty (ChromaDB was just reset, or build failed):
-    the node falls back to vector-only results (bm25_weight contribution = 0).
-  - If ChromaDB is empty: returns [] immediately, no BM25 call made.
-
-This service REPLACES RetrievalService inside the retrieve node.
-RetrievalService itself is unchanged — it's still used as the vector backend.
+The scoring formula, normalisation, merge logic, and all other code
+are completely unchanged.
 """
 
 from typing import List, Dict, Tuple, Optional
@@ -38,9 +30,7 @@ logger = get_logger(__name__)
 class HybridRetrievalResult:
     """
     One result from the hybrid retrieval pipeline.
-
-    Carries both the original score components and the final merged score,
-    which enables debugging and future reranking.
+    Unchanged from Phase 3.
     """
 
     def __init__(
@@ -51,9 +41,9 @@ class HybridRetrievalResult:
         page_num: int,
         doc_id: str,
         metadata: dict,
-        vector_score: float,    # Normalised to [0, 1]; higher = more similar
-        bm25_score: float,      # Normalised to [0, 1]; higher = more relevant
-        combined_score: float,  # Weighted sum of vector_score + bm25_score
+        vector_score: float,
+        bm25_score: float,
+        combined_score: float,
     ) -> None:
         self.chunk_id = chunk_id
         self.text = text
@@ -64,13 +54,9 @@ class HybridRetrievalResult:
         self.vector_score = vector_score
         self.bm25_score = bm25_score
         self.combined_score = combined_score
-
-        # Aliases kept for compatibility with the retrieve node
-        # (which checks result.distance on RetrievalResult objects)
-        self.distance = 1.0 - vector_score  # Re-derive distance from similarity
+        self.distance = 1.0 - vector_score
 
     def excerpt(self, max_chars: int = 200) -> str:
-        """Short preview of the chunk text."""
         if len(self.text) <= max_chars:
             return self.text
         return self.text[:max_chars].rstrip() + "..."
@@ -86,13 +72,6 @@ class HybridRetrievalResult:
 class HybridRetrievalService:
     """
     Merges vector and BM25 search results into a single ranked list.
-
-    Parameters:
-        vector_top_k:     How many candidates to fetch from ChromaDB.
-        bm25_top_k:       How many candidates to score via BM25.
-        semantic_weight:  Weight for vector similarity component.
-        bm25_weight:      Weight for BM25 score component.
-        final_top_k:      How many results to return after merging.
     """
 
     def __init__(
@@ -109,17 +88,18 @@ class HybridRetrievalService:
         self.bm25_weight = bm25_weight
         self.final_top_k = final_top_k
 
-    def retrieve(self, query: str) -> List[HybridRetrievalResult]:
+    def retrieve(
+        self,
+        query: str,
+        doc_id: Optional[str] = None,       # Feature 1: None = all docs
+    ) -> List[HybridRetrievalResult]:
         """
         Runs hybrid retrieval: vector search + BM25, then merges.
 
         Args:
-            query: The retrieval query (may differ from the original user
-                   question if query rewriting is enabled).
-
-        Returns:
-            Up to final_top_k HybridRetrievalResult objects, sorted by
-            combined_score descending.
+            query:  The retrieval query.
+            doc_id: When provided, only chunks from this document are searched.
+                    None (default) searches all documents.
         """
         if not query.strip():
             raise ValueError("Query cannot be empty")
@@ -128,6 +108,7 @@ class HybridRetrievalService:
             "Hybrid retrieval started",
             extra={
                 "query_preview": query[:80],
+                "doc_id_filter": doc_id or "all",
                 "vector_top_k": self.vector_top_k,
                 "bm25_top_k": self.bm25_top_k,
                 "semantic_weight": self.semantic_weight,
@@ -146,7 +127,7 @@ class HybridRetrievalService:
 
         # ── 1. Vector search ──────────────────────────────────────────────────
         with Timer() as vec_timer:
-            vector_results = self._run_vector_search(query, total_chunks)
+            vector_results = self._run_vector_search(query, total_chunks, doc_id)
 
         logger.info(
             "Vector search complete",
@@ -155,7 +136,7 @@ class HybridRetrievalService:
 
         # ── 2. BM25 search ────────────────────────────────────────────────────
         with Timer() as bm25_timer:
-            bm25_results = self._run_bm25_search(query)
+            bm25_results = self._run_bm25_search(query, doc_id)
 
         logger.info(
             "BM25 search complete",
@@ -182,20 +163,36 @@ class HybridRetrievalService:
     # ── Private helpers ───────────────────────────────────────────────────────
 
     def _run_vector_search(
-        self, query: str, total_chunks: int
+        self,
+        query: str,
+        total_chunks: int,
+        doc_id: Optional[str] = None,       # Feature 1
     ) -> List[RetrievalResult]:
-        """Embeds the query and queries ChromaDB."""
+        """
+        Embeds the query and queries ChromaDB.
+
+        Feature 1: when doc_id is provided, adds a ChromaDB 'where' filter
+        so only chunks from that document are considered. ChromaDB applies
+        the filter before the HNSW search, so the n_results cap is relative
+        to the filtered set.
+        """
         effective_k = min(self.vector_top_k, total_chunks)
         embedding_service = get_embedding_service()
         query_embedding = embedding_service.embed_query(query)
 
         vector_store = get_vector_store_service()
         collection = vector_store._get_collection()
-        raw = collection.query(
+
+        # Build query kwargs — only add 'where' when filtering
+        query_kwargs = dict(
             query_embeddings=[query_embedding],
             n_results=effective_k,
             include=["documents", "metadatas", "distances"],
         )
+        if doc_id:
+            query_kwargs["where"] = {"doc_id": {"$eq": doc_id}}
+
+        raw = collection.query(**query_kwargs)
 
         ids = raw["ids"][0]
         texts = raw["documents"][0]
@@ -218,11 +215,26 @@ class HybridRetrievalService:
         return results
 
     def _run_bm25_search(
-        self, query: str
+        self,
+        query: str,
+        doc_id: Optional[str] = None,       # Feature 1
     ) -> List[Tuple[BM25Document, float]]:
-        """Returns BM25 top-k as (doc, raw_score) tuples."""
+        """
+        Returns BM25 top-k as (doc, raw_score) tuples.
+
+        Feature 1: when doc_id is provided, post-filters the BM25 results
+        to only include chunks from that document. Post-filtering is correct
+        here because BM25 scores every document in its index in O(N) regardless
+        — there's no cheaper pre-filter available without rebuilding per-doc
+        indexes, which is unnecessary complexity at this scale.
+        """
         bm25_service = get_bm25_service()
-        return bm25_service.search(query, top_k=self.bm25_top_k)
+        results = bm25_service.search(query, top_k=self.bm25_top_k)
+
+        if doc_id:
+            results = [(doc, score) for doc, score in results if doc.doc_id == doc_id]
+
+        return results
 
     def _merge(
         self,
@@ -231,19 +243,11 @@ class HybridRetrievalService:
     ) -> List[HybridRetrievalResult]:
         """
         Normalises both score distributions and computes the hybrid score.
-
-        Normalisation:
-          vector: similarity = 1 - distance  (ChromaDB cosine distances ∈ [0, 2])
-                  sim clamped to [0, 1], then normalised by max sim in the pool
-          bm25:   raw score / max raw score  (linear, also [0, 1])
-
-        Documents that appear in only one list get 0.0 for the missing component.
-        This is intentional — a document found by both methods is ranked higher.
+        Completely unchanged from Phase 3.
         """
         # Build lookup: chunk_id → (vector_similarity, RetrievalResult)
         vec_map: Dict[str, Tuple[float, RetrievalResult]] = {}
         for r in vector_results:
-            # cosine distance ∈ [0, 2]; similarity = 1 - distance, clamped
             sim = max(0.0, min(1.0, 1.0 - r.distance))
             vec_map[r.chunk_id] = (sim, r)
 
@@ -279,21 +283,19 @@ class HybridRetrievalService:
             b_score = bm25_norm.get(chunk_id, 0.0)
             combined = self.semantic_weight * v_score + self.bm25_weight * b_score
 
-            # Prefer the RetrievalResult for metadata (it has the page_num, etc.)
-            # Fall back to BM25Document if this chunk was only found by BM25
             if chunk_id in vec_map:
                 _, source = vec_map[chunk_id]
                 metadata = source.metadata
                 filename = source.filename
                 page_num = source.page_num
-                doc_id = source.doc_id
+                doc_id_val = source.doc_id
                 text = source.text
             else:
                 _, source = bm25_map[chunk_id]  # type: ignore[assignment]
                 metadata = source.metadata
                 filename = source.filename
                 page_num = source.page_num
-                doc_id = source.doc_id
+                doc_id_val = source.doc_id
                 text = source.text
 
             merged.append(
@@ -302,7 +304,7 @@ class HybridRetrievalService:
                     text=text,
                     filename=filename,
                     page_num=page_num,
-                    doc_id=doc_id,
+                    doc_id=doc_id_val,
                     metadata=metadata,
                     vector_score=v_score,
                     bm25_score=b_score,
@@ -310,7 +312,6 @@ class HybridRetrievalService:
                 )
             )
 
-        # Sort by combined score descending
         merged.sort(key=lambda r: r.combined_score, reverse=True)
         return merged
 
@@ -320,7 +321,6 @@ _hybrid_retrieval_service: Optional[HybridRetrievalService] = None
 
 
 def get_hybrid_retrieval_service() -> HybridRetrievalService:
-    """Returns the shared HybridRetrievalService instance."""
     global _hybrid_retrieval_service
     if _hybrid_retrieval_service is None:
         _hybrid_retrieval_service = HybridRetrievalService(

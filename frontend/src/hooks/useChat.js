@@ -1,11 +1,14 @@
 /**
  * hooks/useChat.js
  * ----------------
- * Manages the full chat lifecycle:
- *  - Persists session_id in localStorage across page refreshes
- *  - Maintains messages array (user + assistant + sources)
- *  - Calls POST /api/v1/ask and handles streaming state
- *  - Exposes clearSession() to start a fresh conversation
+ * Manages the full chat lifecycle.
+ *
+ * Feature 1 change: send() now accepts an optional second argument selectedDocId.
+ * When provided it is forwarded to askQuestion() so the backend scopes
+ * retrieval to that document. When null/undefined, all documents are searched.
+ *
+ * Everything else — session persistence, message array, localStorage, error
+ * handling, clearSession — is completely unchanged.
  */
 
 import { useState, useCallback, useRef } from 'react'
@@ -38,7 +41,6 @@ function loadMessages() {
 
 function saveMessages(msgs) {
   try {
-    // Keep last 100 messages to avoid localStorage bloat
     const trimmed = msgs.slice(-100)
     localStorage.setItem(MESSAGES_KEY, JSON.stringify(trimmed))
   } catch {}
@@ -64,8 +66,14 @@ export function useChat() {
     })
   }, [])
 
+  /**
+   * Send a question to the backend.
+   *
+   * @param {string} question       The user's question text.
+   * @param {string|null} selectedDocId  Feature 1: doc_id to filter by, or null for all docs.
+   */
   const send = useCallback(
-    async (question) => {
+    async (question, selectedDocId = null) => {
       if (!question.trim() || isLoading) return
 
       setError(null)
@@ -73,9 +81,9 @@ export function useChat() {
       setIsLoading(true)
 
       try {
-        const data = await askQuestion(question, sessionId)
+        // Feature 1: pass selectedDocId (null is fine — API treats it as "all docs")
+        const data = await askQuestion(question, sessionId, selectedDocId)
 
-        // Backend may return a new session_id on first message
         if (data.session_id && data.session_id !== sessionId) {
           setSessionId(data.session_id)
           saveSession(data.session_id)
@@ -88,14 +96,13 @@ export function useChat() {
           rewrittenQuery: data.rewritten_query,
           processingMs: data.processing_time_ms,
           chunksRetrieved: data.chunks_retrieved,
+          // Feature 1: store which doc was filtered (for display in messages if desired)
+          docIdFilter: data.doc_id_filter,
         })
       } catch (err) {
         const msg = err.userMessage || 'Something went wrong. Please try again.'
         setError(msg)
-        addMessage({
-          role: 'error',
-          content: msg,
-        })
+        addMessage({ role: 'error', content: msg })
       } finally {
         setIsLoading(false)
       }

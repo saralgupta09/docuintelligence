@@ -2,15 +2,17 @@
  * api/client.js
  * -------------
  * Central Axios instance and all backend API call functions.
- * All requests go to the Vite proxy → http://localhost:8000.
+ *
+ * Feature 1 change: askQuestion() accepts an optional third argument docId.
+ * When provided it is sent as doc_id in the request body.
+ * When null/undefined it is omitted, preserving the existing "all docs" behaviour.
  */
 
 import axios from 'axios'
 
-// Axios instance — base URL is relative so Vite proxy handles CORS
 const api = axios.create({
   baseURL: '',
-  timeout: 120_000, // 2 min (LLM generation can be slow)
+  timeout: 120_000,
   headers: { 'Content-Type': 'application/json' },
 })
 
@@ -49,17 +51,12 @@ api.interceptors.response.use(
 export async function fetchHealth() {
   const { data } = await api.get('/health')
   return data
-  // Returns: { status, app, version, phase, gemini_key_configured,
-  //            vector_db: { total_chunks }, memory: { active_sessions },
-  //            ocr: { status, enabled }, hybrid_weights, ... }
 }
 
 // ── Document list ────────────────────────────────────────────────────────────
 export async function fetchDocuments() {
   const { data } = await api.get('/api/v1/documents/')
   return data
-  // Returns: { documents: [{ doc_id, filename, total_pages, chunk_count,
-  //                          ocr_applied, upload_timestamp }] }
 }
 
 // ── PDF upload (multipart/form-data) ────────────────────────────────────────
@@ -76,19 +73,29 @@ export async function uploadPDF(file, onProgress) {
     },
   })
   return data
-  // Returns IngestResponse: { status, message, filename, doc_id,
-  //   total_pages, chunks_stored, ocr_applied, ocr_pages_count, ... }
 }
 
 // ── Ask a question ──────────────────────────────────────────────────────────
-export async function askQuestion(question, sessionId) {
-  const { data } = await api.post('/api/v1/ask/', {
+/**
+ * @param {string} question
+ * @param {string|null} sessionId
+ * @param {string|null} docId  Feature 1: when set, backend scopes retrieval to this doc
+ */
+export async function askQuestion(question, sessionId, docId = null) {
+  const body = {
     question,
     session_id: sessionId || undefined,
-  })
+  }
+
+  // Feature 1: only include doc_id in the body when it is a non-empty string.
+  // Sending null would cause pydantic to treat it as an explicit null (fine),
+  // but omitting it is cleaner and matches the "no filter" default.
+  if (docId) {
+    body.doc_id = docId
+  }
+
+  const { data } = await api.post('/api/v1/ask/', body)
   return data
-  // Returns AskResponse: { question, answer, sources, chunks_retrieved,
-  //   processing_time_ms, rewritten_query, session_id }
 }
 
 export default api

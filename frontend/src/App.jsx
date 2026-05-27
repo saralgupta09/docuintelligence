@@ -1,14 +1,15 @@
 /**
  * App.jsx
  * --------
- * Root component.  Composes the full layout:
- *   TopBar (full width)
- *   └── Sidebar (left) + ChatArea (right)
+ * Root component.
  *
- * Wires hooks:
- *   useBackendStatus → TopBar + Sidebar + ChatArea
- *   useDocuments     → Sidebar + TopBar doc count
- *   useChat          → ChatArea + TopBar session
+ * Feature 1 changes:
+ *   - Destructures selectedDocId, selectDoc, clearSelection from useDocuments()
+ *   - Wraps chat.send() so it automatically includes selectedDocId
+ *   - Passes selectDoc / selectedDocId down to Sidebar → DocumentList
+ *   - Passes selectedDoc object down to ChatArea for the "Searching: X" label
+ *
+ * All other wiring (TopBar, backendStatus, upload flow) is unchanged.
  */
 
 import React from 'react'
@@ -27,9 +28,18 @@ export default function App() {
   // When a new document is uploaded: add it optimistically + refresh list
   const handleUploaded = (ingestResponse) => {
     documents.addDocument(ingestResponse)
-    // Full refresh after a short delay to get server-side data
     setTimeout(() => documents.refresh(), 1500)
   }
+
+  // Feature 1: wrap send() to inject the currently selected doc_id
+  const handleSend = (question) => {
+    chat.send(question, documents.selectedDocId)
+  }
+
+  // Feature 1: find the full doc object for the selected doc (for the label)
+  const selectedDoc = documents.selectedDocId
+    ? documents.documents.find((d) => d.doc_id === documents.selectedDocId) ?? null
+    : null
 
   return (
     <div className="h-screen flex flex-col bg-ink-950 text-ink-50 overflow-hidden">
@@ -55,9 +65,10 @@ export default function App() {
         <ChatArea
           messages={chat.messages}
           isLoading={chat.isLoading}
-          onSend={chat.send}
+          onSend={handleSend}
           backendStatus={backendStatus}
           hasDocuments={documents.total > 0}
+          selectedDoc={selectedDoc}
         />
       </div>
     </div>

@@ -1,11 +1,11 @@
 /**
  * components/ChatInput.jsx
  * -------------------------
- * Chat input with:
- *  - Auto-resizing textarea
- *  - Enter to send (Shift+Enter for newline)
- *  - Disabled state when backend is offline or loading
- *  - Character counter for long messages
+ * Feature 1 change: when selectedDoc is provided, the placeholder text
+ * changes to mention the document name so the user knows context is active.
+ *
+ * All other logic — auto-resize, Enter/Shift+Enter, char counter,
+ * disabled states — is completely unchanged.
  */
 
 import React, { useState, useRef, useEffect, useCallback } from 'react'
@@ -13,12 +13,17 @@ import { Send, Loader2 } from 'lucide-react'
 
 const MAX_CHARS = 2000
 
-export default function ChatInput({ onSend, isLoading, backendOnline, disabled }) {
+export default function ChatInput({
+  onSend,
+  isLoading,
+  backendOnline,
+  disabled,
+  selectedDoc,        // Feature 1: currently selected doc object (or null)
+}) {
   const [text, setText] = useState('')
   const textareaRef = useRef(null)
   const isDisabled = isLoading || !backendOnline || disabled
 
-  // Auto-resize textarea
   useEffect(() => {
     const ta = textareaRef.current
     if (!ta) return
@@ -31,7 +36,6 @@ export default function ChatInput({ onSend, isLoading, backendOnline, disabled }
     if (!trimmed || isDisabled) return
     onSend(trimmed)
     setText('')
-    // Reset height
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto'
     }
@@ -56,6 +60,15 @@ export default function ChatInput({ onSend, isLoading, backendOnline, disabled }
   const charCount = text.length
   const nearLimit = charCount > MAX_CHARS * 0.8
 
+  // Feature 1: contextual placeholder text
+  const placeholder = !backendOnline
+    ? 'Backend offline — cannot send messages'
+    : isLoading
+      ? 'AI is responding…'
+      : selectedDoc
+        ? `Ask about ${selectedDoc.filename}…`
+        : 'Ask a question about your documents…'
+
   return (
     <div className="border-t border-ink-800 bg-ink-950/80 backdrop-blur-sm p-4">
       <div
@@ -75,13 +88,7 @@ export default function ChatInput({ onSend, isLoading, backendOnline, disabled }
           onKeyDown={handleKeyDown}
           disabled={isDisabled}
           rows={1}
-          placeholder={
-            !backendOnline
-              ? 'Backend offline — cannot send messages'
-              : isLoading
-                ? 'AI is responding…'
-                : 'Ask a question about your documents…'
-          }
+          placeholder={placeholder}
           className="
             flex-1 bg-transparent resize-none outline-none text-sm text-ink-100
             placeholder:text-ink-600 leading-relaxed min-h-[24px]
@@ -92,14 +99,12 @@ export default function ChatInput({ onSend, isLoading, backendOnline, disabled }
         />
 
         <div className="flex items-center gap-2 shrink-0 self-end">
-          {/* Character counter */}
           {nearLimit && (
             <span className={`text-[10px] font-mono ${charCount >= MAX_CHARS ? 'text-rose-400' : 'text-ink-500'}`}>
               {MAX_CHARS - charCount}
             </span>
           )}
 
-          {/* Send button */}
           <button
             onClick={handleSend}
             disabled={isDisabled || !text.trim()}
@@ -121,7 +126,6 @@ export default function ChatInput({ onSend, isLoading, backendOnline, disabled }
         </div>
       </div>
 
-      {/* Hint */}
       {!isDisabled && (
         <p className="text-[10px] text-ink-700 text-center mt-1.5">
           Enter to send · Shift+Enter for new line
