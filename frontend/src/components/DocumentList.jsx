@@ -1,15 +1,13 @@
 /**
  * components/DocumentList.jsx
  * ----------------------------
- * Feature 1 changes:
- *   - Accepts selectedDocId, onSelectDoc, onClearSelection props
- *   - Clicking a DocCard calls onSelectDoc(doc.doc_id)
- *   - Selected card gets a highlighted border + background
- *   - A "×" clear button appears on the selected card to deselect
- *   - When a doc is selected, a small pill below the header shows its name
+ * Feature 2 change: DocCard click now calls BOTH onSelectDoc (Feature 1 —
+ * scopes chat retrieval) AND onOpenPreview (Feature 2 — opens PDF viewer).
+ * Clicking a selected card again closes the preview and clears selection.
  *
- * All existing markup (icon, name, page count, chunk count, OCR badge,
- * timestamp, loading/error/empty states) is completely preserved.
+ * All Feature 1 styling (amber highlight, filter pill, deselect button)
+ * is preserved exactly. The only behavioral change is the additional
+ * onOpenPreview call on click.
  */
 
 import React from 'react'
@@ -24,6 +22,7 @@ export default function DocumentList({
   selectedDocId,
   onSelectDoc,
   onClearSelection,
+  onOpenPreview,     // Feature 2: called when a doc is clicked
 }) {
   return (
     <div className="flex-1 flex flex-col overflow-hidden px-3 pb-3">
@@ -96,6 +95,7 @@ export default function DocumentList({
               isSelected={doc.doc_id === selectedDocId}
               onSelect={onSelectDoc}
               onDeselect={onClearSelection}
+              onOpenPreview={onOpenPreview}
             />
           ))}
         </div>
@@ -104,7 +104,7 @@ export default function DocumentList({
   )
 }
 
-function DocCard({ doc, isSelected, onSelect, onDeselect }) {
+function DocCard({ doc, isSelected, onSelect, onDeselect, onOpenPreview }) {
   const name = doc.filename || 'Unknown file'
   const pages = doc.total_pages
   const chunks = doc.chunk_count
@@ -112,16 +112,23 @@ function DocCard({ doc, isSelected, onSelect, onDeselect }) {
 
   const handleClick = () => {
     if (isSelected) {
+      // Second click: deselect and close preview
       onDeselect()
     } else {
+      // First click: select for chat filtering AND open preview
       onSelect(doc.doc_id)
+      onOpenPreview?.(doc.doc_id)
     }
   }
 
   return (
     <div
       onClick={handleClick}
-      title={isSelected ? 'Click to deselect (search all docs)' : 'Click to search only this document'}
+      title={
+        isSelected
+          ? 'Click to deselect and close preview'
+          : 'Click to select and preview this document'
+      }
       className={`
         group rounded-lg border p-2.5 transition-all cursor-pointer animate-fade-in
         ${isSelected
@@ -174,7 +181,7 @@ function DocCard({ doc, isSelected, onSelect, onDeselect }) {
           )}
         </div>
 
-        {/* Feature 1: deselect button — only visible on selected card */}
+        {/* Deselect button — only visible on selected card */}
         {isSelected && (
           <button
             onClick={(e) => { e.stopPropagation(); onDeselect() }}
@@ -186,7 +193,7 @@ function DocCard({ doc, isSelected, onSelect, onDeselect }) {
         )}
       </div>
 
-      {/* Feature 1: selected label */}
+      {/* Selected label */}
       {isSelected && (
         <p className="text-[10px] text-ember-400/70 mt-1.5 pl-9">
           Searching this document only

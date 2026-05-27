@@ -1,15 +1,13 @@
 /**
  * hooks/useDocuments.js
  * ---------------------
- * Fetches and manages the list of ingested documents.
+ * Feature 2 additions:
+ *   previewDocId  — the doc_id whose PDF is currently open in the preview panel
+ *   openPreview(id)  — opens the preview for a doc_id
+ *   closePreview()   — closes the preview panel
  *
- * Feature 1 additions:
- *   selectedDocId  — the doc_id of the currently selected document, or null
- *   selectDoc(id)  — sets selectedDocId (call with the doc_id string)
- *   clearSelection() — resets to null (search all documents)
- *
- * All existing fields (documents, loading, error, refresh, addDocument, total)
- * are completely unchanged.
+ * Feature 1 fields (selectedDocId, selectDoc, clearSelection) are unchanged.
+ * All other existing fields are unchanged.
  */
 
 import { useState, useEffect, useCallback } from 'react'
@@ -20,8 +18,11 @@ export function useDocuments() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  // Feature 1: selected document state
+  // Feature 1: selected document state (for chat filtering)
   const [selectedDocId, setSelectedDocId] = useState(null)
+
+  // Feature 2: preview document state (for PDF preview panel)
+  const [previewDocId, setPreviewDocId] = useState(null)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -44,7 +45,6 @@ export function useDocuments() {
     load()
   }, [load])
 
-  // Optimistically add a newly uploaded document before the next fetch
   const addDocument = useCallback((ingestResponse) => {
     const newDoc = {
       doc_id: ingestResponse.doc_id,
@@ -62,14 +62,22 @@ export function useDocuments() {
     })
   }, [])
 
-  // Feature 1: select a document by its doc_id
+  // Feature 1
   const selectDoc = useCallback((docId) => {
     setSelectedDocId(docId)
   }, [])
 
-  // Feature 1: clear selection → search all documents
   const clearSelection = useCallback(() => {
     setSelectedDocId(null)
+  }, [])
+
+  // Feature 2
+  const openPreview = useCallback((docId) => {
+    setPreviewDocId(docId)
+  }, [])
+
+  const closePreview = useCallback(() => {
+    setPreviewDocId(null)
   }, [])
 
   return {
@@ -83,5 +91,9 @@ export function useDocuments() {
     selectedDocId,
     selectDoc,
     clearSelection,
+    // Feature 2
+    previewDocId,
+    openPreview,
+    closePreview,
   }
 }

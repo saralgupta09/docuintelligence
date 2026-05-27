@@ -1,9 +1,9 @@
 /**
  * components/Sidebar.jsx
  * -----------------------
- * Feature 1 change: forwards selectDoc, clearSelection, and selectedDocId
- * from the documents hook down to DocumentList.
- * Nothing else changes.
+ * Feature 2 change: forwards onOpenPreview from the documents hook
+ * down to DocumentList.
+ * Everything else is unchanged.
  */
 
 import React from 'react'
@@ -38,6 +38,7 @@ export default function Sidebar({ backendStatus, documents, onUploaded }) {
         selectedDocId={documents.selectedDocId}
         onSelectDoc={documents.selectDoc}
         onClearSelection={documents.clearSelection}
+        onOpenPreview={documents.openPreview}
       />
     </aside>
   )

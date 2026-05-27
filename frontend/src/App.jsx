@@ -1,21 +1,21 @@
 /**
  * App.jsx
  * --------
- * Root component.
+ * Feature 2 changes:
+ *   - Imports PdfPreviewPanel
+ *   - Reads previewDocId, closePreview from useDocuments()
+ *   - Renders PdfPreviewPanel between Sidebar and ChatArea when a doc is previewed
+ *   - The panel is conditionally mounted so it unmounts fully when closed,
+ *     which resets react-pdf state cleanly
  *
- * Feature 1 changes:
- *   - Destructures selectedDocId, selectDoc, clearSelection from useDocuments()
- *   - Wraps chat.send() so it automatically includes selectedDocId
- *   - Passes selectDoc / selectedDocId down to Sidebar → DocumentList
- *   - Passes selectedDoc object down to ChatArea for the "Searching: X" label
- *
- * All other wiring (TopBar, backendStatus, upload flow) is unchanged.
+ * Feature 1 wiring (selectedDocId, handleSend, selectedDoc) is unchanged.
  */
 
 import React from 'react'
 import TopBar from './components/TopBar'
 import Sidebar from './components/Sidebar'
 import ChatArea from './components/ChatArea'
+import PdfPreviewPanel from './components/PdfPreviewPanel'
 import { useBackendStatus } from './hooks/useBackendStatus'
 import { useDocuments } from './hooks/useDocuments'
 import { useChat } from './hooks/useChat'
@@ -25,7 +25,6 @@ export default function App() {
   const documents = useDocuments()
   const chat = useChat()
 
-  // When a new document is uploaded: add it optimistically + refresh list
   const handleUploaded = (ingestResponse) => {
     documents.addDocument(ingestResponse)
     setTimeout(() => documents.refresh(), 1500)
@@ -36,9 +35,14 @@ export default function App() {
     chat.send(question, documents.selectedDocId)
   }
 
-  // Feature 1: find the full doc object for the selected doc (for the label)
+  // Feature 1: full doc object for the "Searching: X" label in ChatArea
   const selectedDoc = documents.selectedDocId
     ? documents.documents.find((d) => d.doc_id === documents.selectedDocId) ?? null
+    : null
+
+  // Feature 2: full doc object for the preview panel
+  const previewDoc = documents.previewDocId
+    ? documents.documents.find((d) => d.doc_id === documents.previewDocId) ?? null
     : null
 
   return (
@@ -70,6 +74,14 @@ export default function App() {
           hasDocuments={documents.total > 0}
           selectedDoc={selectedDoc}
         />
+
+        {/* Feature 2: PDF preview panel — only mounted when a doc is previewed */}
+        {previewDoc && (
+          <PdfPreviewPanel
+            doc={previewDoc}
+            onClose={documents.closePreview}
+          />
+        )}
       </div>
     </div>
   )
