@@ -1,16 +1,3 @@
-"""
-main.py  (MODIFIED for Phase 5 frontend integration)
--------
-Changes from original (both are additive / non-breaking):
-
-1. CORSMiddleware now also allows http://localhost:5173 and
-   http://127.0.0.1:5173  (Vite dev server default port).
-   The original origins (8501) are preserved for backward compat.
-
-2. The new documents router is registered at /api/v1.
-   All existing routes and lifespan logic are UNCHANGED.
-"""
-
 from contextlib import asynccontextmanager
 from typing import Dict, Any
 
@@ -19,7 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from config import settings, ensure_directories
 from api.routes import ingest, ask
-from api.routes.documents import router as documents_router   # ← NEW
+from api.routes.documents import router as documents_router
+from api.routes.conversations import router as conversations_router
 from utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -38,7 +26,6 @@ async def lifespan(app: FastAPI):
             "max_memory_turns": settings.MAX_MEMORY_TURNS,
             "semantic_weight": settings.SEMANTIC_WEIGHT,
             "bm25_weight": settings.BM25_WEIGHT,
-            # Phase 4
             "ocr_enabled": settings.OCR_ENABLED,
             "ocr_language": settings.OCR_LANGUAGE,
             "ocr_dpi": settings.OCR_DPI,
@@ -62,7 +49,10 @@ async def lifespan(app: FastAPI):
         },
     )
 
-    # Phase 4: verify tesseract is accessible if OCR is enabled
+    from services.conversation_store import get_conversation_store
+    get_conversation_store()
+    logger.info("ConversationStore ready")
+
     if settings.OCR_ENABLED:
         try:
             import pytesseract
@@ -77,13 +67,11 @@ async def lifespan(app: FastAPI):
             )
         except Exception as e:
             logger.warning(
-                "OCR_ENABLED=true but Tesseract check failed. "
-                "OCR will be skipped for scanned pages. "
-                "Install tesseract: sudo apt-get install tesseract-ocr",
+                "OCR_ENABLED=true but Tesseract check failed. OCR will be skipped for scanned pages.",
                 extra={"error": str(e)},
             )
 
-    logger.info("DocuIntel Phase 5 ready — waiting for requests")
+    logger.info("DocuIntel ready - waiting for requests")
     yield
     logger.info("DocuIntel backend shutting down")
 
@@ -91,18 +79,12 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
-    description=(
-        "Multimodal AI Document Intelligence System\n\n"
-        "Phase 5: React frontend integration."
-    ),
+    description="Multimodal AI Document Intelligence System",
     docs_url="/docs",
     redoc_url="/redoc",
     lifespan=lifespan,
 )
 
-# ── CORS ──────────────────────────────────────────────────────────────────────
-# Phase 5 addition: added Vite dev server origins (5173).
-# Original Streamlit origins (8501) are preserved for backward compat.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -116,14 +98,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── Routers ───────────────────────────────────────────────────────────────────
 app.include_router(ingest.router, prefix="/api/v1")
 app.include_router(ask.router, prefix="/api/v1")
-app.include_router(
-    documents_router,
-    prefix="/api/v1/documents",
-    tags=["Documents"]
-)
+app.include_router(documents_router, prefix="/api/v1/documents", tags=["Documents"])
+app.include_router(conversations_router, prefix="/api/v1")
 
 
 @app.get("/health", summary="Health check", tags=["System"], response_model=Dict[str, Any])
@@ -152,7 +130,6 @@ def health_check() -> Dict[str, Any]:
     except Exception:
         active_sessions = -1
 
-    # Phase 4: add OCR status to health response
     ocr_status = "disabled"
     if settings.OCR_ENABLED:
         try:
@@ -166,7 +143,7 @@ def health_check() -> Dict[str, Any]:
         "status": "ok",
         "app": settings.APP_NAME,
         "version": settings.APP_VERSION,
-        "phase": "5 - React Frontend + OCR + Hybrid RAG + Memory",
+        "phase": "React Frontend + OCR + Hybrid RAG + Memory + Chat Persistence",
         "embedding_model": settings.EMBEDDING_MODEL_NAME,
         "llm_model": settings.GEMINI_MODEL,
         "gemini_key_configured": bool(settings.GEMINI_API_KEY),
@@ -178,7 +155,6 @@ def health_check() -> Dict[str, Any]:
         "vector_db": {"status": db_status, **db_stats},
         "bm25_index": {"documents_indexed": bm25_index_size},
         "memory": {"active_sessions": active_sessions},
-        # Phase 4
         "ocr": {
             "status": ocr_status,
             "enabled": settings.OCR_ENABLED,

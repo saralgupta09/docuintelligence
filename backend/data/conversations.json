@@ -1,0 +1,1072 @@
+{
+  "851933a1-8be4-474b-a1f0-2b5affbeb348": {
+    "session_id": "851933a1-8be4-474b-a1f0-2b5affbeb348",
+    "title": "summarize this document in 5 points",
+    "created_at": "2026-05-27T17:34:28.975964+00:00",
+    "updated_at": "2026-05-27T18:03:54.179281+00:00",
+    "messages": [
+      {
+        "id": "9bbd8e92-e37f-42b5-82f0-3d1cb2ca8689",
+        "timestamp": "2026-05-27T15:47:41.637Z",
+        "role": "user",
+        "content": "summarize this document in 5 points"
+      },
+      {
+        "id": "4a4427f3-5e9c-498c-8689-e053d11cd043",
+        "timestamp": "2026-05-27T15:47:50.995Z",
+        "role": "assistant",
+        "content": "Here is a 5-point summary of the document:\n\n1.  Saral Gupta demonstrates strong competitive programming skills with a maximum Codeforces rating of 1435 and CodeChef rating of 1792, having solved over 90,000 problems across various platforms and possessing strong proficiency in C++ and Data Structures & Algorithms (Source 1).\n2.  Developed a CNN-based hybrid house price prediction model at IIT Roorkee, achieving an R² of approximately 0.86 by integrating satellite images and tabular features, and automating satellite image acquisition via ArcGIS REST API (Source 1, Source 3).\n3.  Designed and implemented a C-based memory simulator at IIT Roorkee, which includes a custom dynamic memory allocator (malloc/free) and simulates multi-level CPU caches with configurable policies and detailed statistics (Source 3, Source 4).\n4.  Achieved academic excellence at IIT Roorkee with Grade 10 in Data Structures & Algorithms, Probability & Statistics, and Network Theory, and secured an All India Rank of 3564 in JEE Advanced 2024 (Source 2, Source 4).\n5.  Possesses strong programming skills in C++, Python, and C, with expertise in ML & Data Science tools (TensorFlow, Keras, Scikit-learn) and Systems & CS concepts (Memory Allocation, Cache Architecture), alongside leadership experience as a Branch Coordinator for the Student Mentorship Programme at IIT Roorkee (Source 2, Source 5).",
+        "sources": [
+          {
+            "filename": "20260527_154658_my resume.pdf",
+            "page": 1,
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "excerpt": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems...",
+            "score": 0.7
+          }
+        ],
+        "rewrittenQuery": "Document summary",
+        "processingMs": 9330,
+        "chunksRetrieved": 5,
+        "docIdFilter": "20260527_154658_my_resume_pdf",
+        "retrievedChunks": [
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "text": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems across Codeforces, LeetCode, and GeeksforGeeks \nStrong proficiency in C++, with solid understanding of DSA (arrays, recursion, sorting, binary search, trees, graphs, dynamic programming) \n Projects \nCNN Based House Price Prediction Model | IIT Roorkee \n• \nBuilt a CNN-based hybrid house price prediction model using satellite images + tabular features (R² ≈ 0.86). \n• \nImplemented custom multimodal training pipelines for synchronized image and tabular data. \n• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.7
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_4",
+            "text": "Academic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n• \nProbability & Statistics — Grade 10 (Top 140 / 1400 students(approx) ) \n• \nNetwork Theory — Grade 10 (Top 14 / 170 students) \n• \nLinear Algebra & Vector Calculus — Grade 9 \n Skills \nProgramming Languages: C++, Python, C, HTML, CSS \nML & Data Science: TensorFlow,Keras, Scikit-learn, Pandas, NumPy, Matplotlib \nSystems & CS: Memory Allocation, Cache Architecture, Pointers, Low-level C,Low Level Design \nTools: Git, VS Code \n Key Coursework \nData Structures & Algorithms, Probability & Statistics, Linear Algebra & Vector Calculus,Network Theory, Signals and Systems \n Positions of Responsibility & Extra Curriculars",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6904081125093792
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_2",
+            "text": "• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n• \nImproved performance over tabular models through deep spatial feature extraction (CNNs). \n• \nApplied Grad-CAM visualizations to interpret price-driving regions in satellite imagery. \nTechnologies: Python, TensorFlow/Keras, CNNs, Pandas, NumPy, Scikit-learn \nProject Repository : https://github.com/saralgupta09/House-Price-Prediction-Model \n \nMemory Allocation and CPU Cache Simulation in C| IIT Roorkee \n \n• \nDesigned and implemented a C-based memory simulator modeling heap allocation, cache hierarchy, and memory access behavior. \n• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6848371389191549
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_3",
+            "text": "• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n• \nSimulated multi-level CPU caches (L1/L2/L3) with configurable block size, associativity, and replacement policies. \n• \nInstrumented detailed cache statistics (hits, misses, access patterns) to analyze memory performance. \nTechnologies: C, Memory Allocation, Cache Architecture, Pointers, Low-level Systems Programming \nProject Repository : https://github.com/saralgupta09/memory-simulator \n Awards / Scholarships / Academic Achievements \nJEE Advanced 2024: All India Rank 3564 \nJEE Main 2024 : 99.67 percentile, AIR 5345 among 14.5 lakh candidates \nAcademic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6839419566627393
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_5",
+            "text": "Positions of Responsibility & Extra Curriculars \nBranch Coordinator, Student Mentorship Programme (SMP), IIT Roorkee \n• \nActed as the primary liaison between seniors and first-year students of the branch; coordinated mentoring activities, addressed academic concerns, \nand ensured smooth information flow. \nMember, Electrical Vertical, Team KNOx, IIT Roorkee \n• \nContributed to the electrical subsystem of the team by assisting in circuit design, component selection, and integration with mechanical and control \nmodules.",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.675684026916865
+          }
+        ]
+      },
+      {
+        "id": "63d37ea8-9d4b-4946-9968-f487694cebcf",
+        "timestamp": "2026-05-27T17:35:46.440Z",
+        "role": "assistant",
+        "content": "Answer generation failed: LLM generation failed: 403 PERMISSION_DENIED. {'error': {'code': 403, 'message': 'Your API key was reported as leaked. Please use another API key.', 'status': 'PERMISSION_DENIED'}}",
+        "sources": [
+          {
+            "filename": "20260527_154658_my resume.pdf",
+            "page": 1,
+            "chunk_id": "20260527_154658_my_resume_pdf_3",
+            "excerpt": "• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n• \nSimulated multi-level CPU caches (L1/L2/L3) with configurable block size, associativity, and replacement...",
+            "score": 0.7
+          }
+        ],
+        "rewrittenQuery": "hello",
+        "processingMs": 1653,
+        "chunksRetrieved": 5,
+        "docIdFilter": "20260527_154658_my_resume_pdf",
+        "retrievedChunks": [
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_3",
+            "text": "• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n• \nSimulated multi-level CPU caches (L1/L2/L3) with configurable block size, associativity, and replacement policies. \n• \nInstrumented detailed cache statistics (hits, misses, access patterns) to analyze memory performance. \nTechnologies: C, Memory Allocation, Cache Architecture, Pointers, Low-level Systems Programming \nProject Repository : https://github.com/saralgupta09/memory-simulator \n Awards / Scholarships / Academic Achievements \nJEE Advanced 2024: All India Rank 3564 \nJEE Main 2024 : 99.67 percentile, AIR 5345 among 14.5 lakh candidates \nAcademic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.7
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_5",
+            "text": "Positions of Responsibility & Extra Curriculars \nBranch Coordinator, Student Mentorship Programme (SMP), IIT Roorkee \n• \nActed as the primary liaison between seniors and first-year students of the branch; coordinated mentoring activities, addressed academic concerns, \nand ensured smooth information flow. \nMember, Electrical Vertical, Team KNOx, IIT Roorkee \n• \nContributed to the electrical subsystem of the team by assisting in circuit design, component selection, and integration with mechanical and control \nmodules.",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6900640046071933
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "text": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems across Codeforces, LeetCode, and GeeksforGeeks \nStrong proficiency in C++, with solid understanding of DSA (arrays, recursion, sorting, binary search, trees, graphs, dynamic programming) \n Projects \nCNN Based House Price Prediction Model | IIT Roorkee \n• \nBuilt a CNN-based hybrid house price prediction model using satellite images + tabular features (R² ≈ 0.86). \n• \nImplemented custom multimodal training pipelines for synchronized image and tabular data. \n• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6862223230836983
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_4",
+            "text": "Academic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n• \nProbability & Statistics — Grade 10 (Top 140 / 1400 students(approx) ) \n• \nNetwork Theory — Grade 10 (Top 14 / 170 students) \n• \nLinear Algebra & Vector Calculus — Grade 9 \n Skills \nProgramming Languages: C++, Python, C, HTML, CSS \nML & Data Science: TensorFlow,Keras, Scikit-learn, Pandas, NumPy, Matplotlib \nSystems & CS: Memory Allocation, Cache Architecture, Pointers, Low-level C,Low Level Design \nTools: Git, VS Code \n Key Coursework \nData Structures & Algorithms, Probability & Statistics, Linear Algebra & Vector Calculus,Network Theory, Signals and Systems \n Positions of Responsibility & Extra Curriculars",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6492823346546511
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_2",
+            "text": "• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n• \nImproved performance over tabular models through deep spatial feature extraction (CNNs). \n• \nApplied Grad-CAM visualizations to interpret price-driving regions in satellite imagery. \nTechnologies: Python, TensorFlow/Keras, CNNs, Pandas, NumPy, Scikit-learn \nProject Repository : https://github.com/saralgupta09/House-Price-Prediction-Model \n \nMemory Allocation and CPU Cache Simulation in C| IIT Roorkee \n \n• \nDesigned and implemented a C-based memory simulator modeling heap allocation, cache hierarchy, and memory access behavior. \n• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6445433824627494
+          }
+        ]
+      },
+      {
+        "id": "c7cf4601-2478-4555-be71-daba851aa289",
+        "timestamp": "2026-05-27T17:52:37.884Z",
+        "role": "user",
+        "content": "what is this document about"
+      },
+      {
+        "id": "67b664cb-9443-491f-a893-139917504f2a",
+        "timestamp": "2026-05-27T17:52:40.777Z",
+        "role": "assistant",
+        "content": "Answer generation failed: LLM generation failed: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+        "sources": [
+          {
+            "filename": "20260527_154658_my resume.pdf",
+            "page": 1,
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "excerpt": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems...",
+            "score": 0.7
+          }
+        ],
+        "rewrittenQuery": "what is this document about",
+        "processingMs": 2839,
+        "chunksRetrieved": 5,
+        "docIdFilter": "20260527_154658_my_resume_pdf",
+        "retrievedChunks": [
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "text": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems across Codeforces, LeetCode, and GeeksforGeeks \nStrong proficiency in C++, with solid understanding of DSA (arrays, recursion, sorting, binary search, trees, graphs, dynamic programming) \n Projects \nCNN Based House Price Prediction Model | IIT Roorkee \n• \nBuilt a CNN-based hybrid house price prediction model using satellite images + tabular features (R² ≈ 0.86). \n• \nImplemented custom multimodal training pipelines for synchronized image and tabular data. \n• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.7
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_2",
+            "text": "• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n• \nImproved performance over tabular models through deep spatial feature extraction (CNNs). \n• \nApplied Grad-CAM visualizations to interpret price-driving regions in satellite imagery. \nTechnologies: Python, TensorFlow/Keras, CNNs, Pandas, NumPy, Scikit-learn \nProject Repository : https://github.com/saralgupta09/House-Price-Prediction-Model \n \nMemory Allocation and CPU Cache Simulation in C| IIT Roorkee \n \n• \nDesigned and implemented a C-based memory simulator modeling heap allocation, cache hierarchy, and memory access behavior. \n• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6749951546725015
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_5",
+            "text": "Positions of Responsibility & Extra Curriculars \nBranch Coordinator, Student Mentorship Programme (SMP), IIT Roorkee \n• \nActed as the primary liaison between seniors and first-year students of the branch; coordinated mentoring activities, addressed academic concerns, \nand ensured smooth information flow. \nMember, Electrical Vertical, Team KNOx, IIT Roorkee \n• \nContributed to the electrical subsystem of the team by assisting in circuit design, component selection, and integration with mechanical and control \nmodules.",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6740988003704292
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_4",
+            "text": "Academic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n• \nProbability & Statistics — Grade 10 (Top 140 / 1400 students(approx) ) \n• \nNetwork Theory — Grade 10 (Top 14 / 170 students) \n• \nLinear Algebra & Vector Calculus — Grade 9 \n Skills \nProgramming Languages: C++, Python, C, HTML, CSS \nML & Data Science: TensorFlow,Keras, Scikit-learn, Pandas, NumPy, Matplotlib \nSystems & CS: Memory Allocation, Cache Architecture, Pointers, Low-level C,Low Level Design \nTools: Git, VS Code \n Key Coursework \nData Structures & Algorithms, Probability & Statistics, Linear Algebra & Vector Calculus,Network Theory, Signals and Systems \n Positions of Responsibility & Extra Curriculars",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6664179385749309
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_3",
+            "text": "• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n• \nSimulated multi-level CPU caches (L1/L2/L3) with configurable block size, associativity, and replacement policies. \n• \nInstrumented detailed cache statistics (hits, misses, access patterns) to analyze memory performance. \nTechnologies: C, Memory Allocation, Cache Architecture, Pointers, Low-level Systems Programming \nProject Repository : https://github.com/saralgupta09/memory-simulator \n Awards / Scholarships / Academic Achievements \nJEE Advanced 2024: All India Rank 3564 \nJEE Main 2024 : 99.67 percentile, AIR 5345 among 14.5 lakh candidates \nAcademic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6466296351103059
+          }
+        ]
+      },
+      {
+        "id": "3aee1205-2929-48e9-b7c7-33f79abd08e4",
+        "timestamp": "2026-05-27T17:55:11.935Z",
+        "role": "user",
+        "content": "waht is this document about"
+      },
+      {
+        "id": "4ab39229-d6e1-4e2f-bf40-793cdf656e67",
+        "role": "user",
+        "content": "waht is this document about",
+        "timestamp": "2026-05-27T17:55:11.945665+00:00"
+      },
+      {
+        "id": "b1f8024a-0b72-444e-9fbf-df92ee64eb6b",
+        "role": "assistant",
+        "content": "Answer generation failed: LLM generation failed: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\\nPlease retry in 25.584014528s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_input_token_count', 'quotaId': 'GenerateContentInputTokensPerModelPerMinute-FreeTier', 'quotaDimensions': {'model': 'gemini-2.0-flash', 'location': 'global'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '25s'}]}}",
+        "timestamp": "2026-05-27T17:55:34.195828+00:00",
+        "sources": [
+          {
+            "filename": "20260527_154658_my resume.pdf",
+            "page": 1,
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "excerpt": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems...",
+            "score": 0.7
+          }
+        ],
+        "rewrittenQuery": "waht is this document about",
+        "processingMs": 22249,
+        "chunksRetrieved": 5,
+        "docIdFilter": "20260527_154658_my_resume_pdf",
+        "retrievedChunks": [
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "text": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems across Codeforces, LeetCode, and GeeksforGeeks \nStrong proficiency in C++, with solid understanding of DSA (arrays, recursion, sorting, binary search, trees, graphs, dynamic programming) \n Projects \nCNN Based House Price Prediction Model | IIT Roorkee \n• \nBuilt a CNN-based hybrid house price prediction model using satellite images + tabular features (R² ≈ 0.86). \n• \nImplemented custom multimodal training pipelines for synchronized image and tabular data. \n• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.7
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_5",
+            "text": "Positions of Responsibility & Extra Curriculars \nBranch Coordinator, Student Mentorship Programme (SMP), IIT Roorkee \n• \nActed as the primary liaison between seniors and first-year students of the branch; coordinated mentoring activities, addressed academic concerns, \nand ensured smooth information flow. \nMember, Electrical Vertical, Team KNOx, IIT Roorkee \n• \nContributed to the electrical subsystem of the team by assisting in circuit design, component selection, and integration with mechanical and control \nmodules.",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6589634376100477
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_4",
+            "text": "Academic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n• \nProbability & Statistics — Grade 10 (Top 140 / 1400 students(approx) ) \n• \nNetwork Theory — Grade 10 (Top 14 / 170 students) \n• \nLinear Algebra & Vector Calculus — Grade 9 \n Skills \nProgramming Languages: C++, Python, C, HTML, CSS \nML & Data Science: TensorFlow,Keras, Scikit-learn, Pandas, NumPy, Matplotlib \nSystems & CS: Memory Allocation, Cache Architecture, Pointers, Low-level C,Low Level Design \nTools: Git, VS Code \n Key Coursework \nData Structures & Algorithms, Probability & Statistics, Linear Algebra & Vector Calculus,Network Theory, Signals and Systems \n Positions of Responsibility & Extra Curriculars",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6472856690418649
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_3",
+            "text": "• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n• \nSimulated multi-level CPU caches (L1/L2/L3) with configurable block size, associativity, and replacement policies. \n• \nInstrumented detailed cache statistics (hits, misses, access patterns) to analyze memory performance. \nTechnologies: C, Memory Allocation, Cache Architecture, Pointers, Low-level Systems Programming \nProject Repository : https://github.com/saralgupta09/memory-simulator \n Awards / Scholarships / Academic Achievements \nJEE Advanced 2024: All India Rank 3564 \nJEE Main 2024 : 99.67 percentile, AIR 5345 among 14.5 lakh candidates \nAcademic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.639926128554579
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_2",
+            "text": "• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n• \nImproved performance over tabular models through deep spatial feature extraction (CNNs). \n• \nApplied Grad-CAM visualizations to interpret price-driving regions in satellite imagery. \nTechnologies: Python, TensorFlow/Keras, CNNs, Pandas, NumPy, Scikit-learn \nProject Repository : https://github.com/saralgupta09/House-Price-Prediction-Model \n \nMemory Allocation and CPU Cache Simulation in C| IIT Roorkee \n \n• \nDesigned and implemented a C-based memory simulator modeling heap allocation, cache hierarchy, and memory access behavior. \n• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6377106925788548
+          }
+        ]
+      },
+      {
+        "id": "0d78bca9-76ba-4a09-b467-6e59e705e035",
+        "timestamp": "2026-05-27T17:56:01.670Z",
+        "role": "user",
+        "content": "what is this document about"
+      },
+      {
+        "id": "55d4d2c9-85d3-487f-8edb-25e28b5aa804",
+        "timestamp": "2026-05-27T17:56:02.375Z",
+        "role": "assistant",
+        "content": "Answer generation failed: LLM generation failed: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\\nPlease retry in 57.341688886s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_input_token_count', 'quotaId': 'GenerateContentInputTokensPerModelPerMinute-FreeTier', 'quotaDimensions': {'model': 'gemini-2.0-flash', 'location': 'global'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.0-flash', 'location': 'global'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.0-flash', 'location': 'global'}}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '57s'}]}}",
+        "sources": [
+          {
+            "filename": "20260527_154658_my resume.pdf",
+            "page": 1,
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "excerpt": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems...",
+            "score": 0.7
+          }
+        ],
+        "rewrittenQuery": "what is this document about",
+        "processingMs": 670,
+        "chunksRetrieved": 5,
+        "docIdFilter": "20260527_154658_my_resume_pdf",
+        "retrievedChunks": [
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "text": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems across Codeforces, LeetCode, and GeeksforGeeks \nStrong proficiency in C++, with solid understanding of DSA (arrays, recursion, sorting, binary search, trees, graphs, dynamic programming) \n Projects \nCNN Based House Price Prediction Model | IIT Roorkee \n• \nBuilt a CNN-based hybrid house price prediction model using satellite images + tabular features (R² ≈ 0.86). \n• \nImplemented custom multimodal training pipelines for synchronized image and tabular data. \n• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.7
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_2",
+            "text": "• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n• \nImproved performance over tabular models through deep spatial feature extraction (CNNs). \n• \nApplied Grad-CAM visualizations to interpret price-driving regions in satellite imagery. \nTechnologies: Python, TensorFlow/Keras, CNNs, Pandas, NumPy, Scikit-learn \nProject Repository : https://github.com/saralgupta09/House-Price-Prediction-Model \n \nMemory Allocation and CPU Cache Simulation in C| IIT Roorkee \n \n• \nDesigned and implemented a C-based memory simulator modeling heap allocation, cache hierarchy, and memory access behavior. \n• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6749951546725015
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_5",
+            "text": "Positions of Responsibility & Extra Curriculars \nBranch Coordinator, Student Mentorship Programme (SMP), IIT Roorkee \n• \nActed as the primary liaison between seniors and first-year students of the branch; coordinated mentoring activities, addressed academic concerns, \nand ensured smooth information flow. \nMember, Electrical Vertical, Team KNOx, IIT Roorkee \n• \nContributed to the electrical subsystem of the team by assisting in circuit design, component selection, and integration with mechanical and control \nmodules.",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6740988003704292
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_4",
+            "text": "Academic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n• \nProbability & Statistics — Grade 10 (Top 140 / 1400 students(approx) ) \n• \nNetwork Theory — Grade 10 (Top 14 / 170 students) \n• \nLinear Algebra & Vector Calculus — Grade 9 \n Skills \nProgramming Languages: C++, Python, C, HTML, CSS \nML & Data Science: TensorFlow,Keras, Scikit-learn, Pandas, NumPy, Matplotlib \nSystems & CS: Memory Allocation, Cache Architecture, Pointers, Low-level C,Low Level Design \nTools: Git, VS Code \n Key Coursework \nData Structures & Algorithms, Probability & Statistics, Linear Algebra & Vector Calculus,Network Theory, Signals and Systems \n Positions of Responsibility & Extra Curriculars",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6664179385749309
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_3",
+            "text": "• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n• \nSimulated multi-level CPU caches (L1/L2/L3) with configurable block size, associativity, and replacement policies. \n• \nInstrumented detailed cache statistics (hits, misses, access patterns) to analyze memory performance. \nTechnologies: C, Memory Allocation, Cache Architecture, Pointers, Low-level Systems Programming \nProject Repository : https://github.com/saralgupta09/memory-simulator \n Awards / Scholarships / Academic Achievements \nJEE Advanced 2024: All India Rank 3564 \nJEE Main 2024 : 99.67 percentile, AIR 5345 among 14.5 lakh candidates \nAcademic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6466296351103059
+          }
+        ]
+      },
+      {
+        "id": "f405e3ab-3297-4dd6-8f4c-f85afd6a4f64",
+        "timestamp": "2026-05-27T18:00:29.085Z",
+        "role": "user",
+        "content": "what is this document about"
+      },
+      {
+        "id": "4807dbc5-4450-400e-a97a-4ba8a57905ad",
+        "timestamp": "2026-05-27T18:01:00.343Z",
+        "role": "assistant",
+        "content": "This document is a resume, detailing academic achievements, programming skills, projects, competitive programming performance, and positions of responsibility. (Source 1, 2, 3, 4, 5: 20260527_154658_my resume.pdf)",
+        "sources": [
+          {
+            "filename": "20260527_154658_my resume.pdf",
+            "page": 1,
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "excerpt": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems...",
+            "score": 0.7
+          }
+        ],
+        "rewrittenQuery": "what is this document about",
+        "processingMs": 31144,
+        "chunksRetrieved": 5,
+        "docIdFilter": "20260527_154658_my_resume_pdf",
+        "retrievedChunks": [
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "text": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems across Codeforces, LeetCode, and GeeksforGeeks \nStrong proficiency in C++, with solid understanding of DSA (arrays, recursion, sorting, binary search, trees, graphs, dynamic programming) \n Projects \nCNN Based House Price Prediction Model | IIT Roorkee \n• \nBuilt a CNN-based hybrid house price prediction model using satellite images + tabular features (R² ≈ 0.86). \n• \nImplemented custom multimodal training pipelines for synchronized image and tabular data. \n• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.7
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_2",
+            "text": "• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n• \nImproved performance over tabular models through deep spatial feature extraction (CNNs). \n• \nApplied Grad-CAM visualizations to interpret price-driving regions in satellite imagery. \nTechnologies: Python, TensorFlow/Keras, CNNs, Pandas, NumPy, Scikit-learn \nProject Repository : https://github.com/saralgupta09/House-Price-Prediction-Model \n \nMemory Allocation and CPU Cache Simulation in C| IIT Roorkee \n \n• \nDesigned and implemented a C-based memory simulator modeling heap allocation, cache hierarchy, and memory access behavior. \n• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6749951546725015
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_5",
+            "text": "Positions of Responsibility & Extra Curriculars \nBranch Coordinator, Student Mentorship Programme (SMP), IIT Roorkee \n• \nActed as the primary liaison between seniors and first-year students of the branch; coordinated mentoring activities, addressed academic concerns, \nand ensured smooth information flow. \nMember, Electrical Vertical, Team KNOx, IIT Roorkee \n• \nContributed to the electrical subsystem of the team by assisting in circuit design, component selection, and integration with mechanical and control \nmodules.",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6740988003704292
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_4",
+            "text": "Academic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n• \nProbability & Statistics — Grade 10 (Top 140 / 1400 students(approx) ) \n• \nNetwork Theory — Grade 10 (Top 14 / 170 students) \n• \nLinear Algebra & Vector Calculus — Grade 9 \n Skills \nProgramming Languages: C++, Python, C, HTML, CSS \nML & Data Science: TensorFlow,Keras, Scikit-learn, Pandas, NumPy, Matplotlib \nSystems & CS: Memory Allocation, Cache Architecture, Pointers, Low-level C,Low Level Design \nTools: Git, VS Code \n Key Coursework \nData Structures & Algorithms, Probability & Statistics, Linear Algebra & Vector Calculus,Network Theory, Signals and Systems \n Positions of Responsibility & Extra Curriculars",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6664179385749309
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_3",
+            "text": "• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n• \nSimulated multi-level CPU caches (L1/L2/L3) with configurable block size, associativity, and replacement policies. \n• \nInstrumented detailed cache statistics (hits, misses, access patterns) to analyze memory performance. \nTechnologies: C, Memory Allocation, Cache Architecture, Pointers, Low-level Systems Programming \nProject Repository : https://github.com/saralgupta09/memory-simulator \n Awards / Scholarships / Academic Achievements \nJEE Advanced 2024: All India Rank 3564 \nJEE Main 2024 : 99.67 percentile, AIR 5345 among 14.5 lakh candidates \nAcademic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6466296351103059
+          }
+        ]
+      },
+      {
+        "id": "cad549e6-57d5-4355-b047-b7c2cdbe458f",
+        "timestamp": "2026-05-27T18:01:51.250Z",
+        "role": "user",
+        "content": "whose resume it is ?"
+      },
+      {
+        "id": "360b4abd-7f65-425f-bcd8-6f419de7feaa",
+        "timestamp": "2026-05-27T18:01:55.765Z",
+        "role": "assistant",
+        "content": "This is the resume of Saral Gupta. His name appears in the Codeforces and CodeChef sections (saralgupta95) and in the project repository links (saralgupta09). (Source 2, 5: 20260527_154658_my resume.pdf)",
+        "sources": [
+          {
+            "filename": "20260527_154658_my resume.pdf",
+            "page": 1,
+            "chunk_id": "20260527_154658_my_resume_pdf_5",
+            "excerpt": "Positions of Responsibility & Extra Curriculars \nBranch Coordinator, Student Mentorship Programme (SMP), IIT Roorkee \n• \nActed as the primary liaison between seniors and first-year students of the bra...",
+            "score": 0.7
+          }
+        ],
+        "rewrittenQuery": "Resume owner",
+        "processingMs": 4473,
+        "chunksRetrieved": 5,
+        "docIdFilter": "20260527_154658_my_resume_pdf",
+        "retrievedChunks": [
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_5",
+            "text": "Positions of Responsibility & Extra Curriculars \nBranch Coordinator, Student Mentorship Programme (SMP), IIT Roorkee \n• \nActed as the primary liaison between seniors and first-year students of the branch; coordinated mentoring activities, addressed academic concerns, \nand ensured smooth information flow. \nMember, Electrical Vertical, Team KNOx, IIT Roorkee \n• \nContributed to the electrical subsystem of the team by assisting in circuit design, component selection, and integration with mechanical and control \nmodules.",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.7
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "text": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems across Codeforces, LeetCode, and GeeksforGeeks \nStrong proficiency in C++, with solid understanding of DSA (arrays, recursion, sorting, binary search, trees, graphs, dynamic programming) \n Projects \nCNN Based House Price Prediction Model | IIT Roorkee \n• \nBuilt a CNN-based hybrid house price prediction model using satellite images + tabular features (R² ≈ 0.86). \n• \nImplemented custom multimodal training pipelines for synchronized image and tabular data. \n• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6378256320072486
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_3",
+            "text": "• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n• \nSimulated multi-level CPU caches (L1/L2/L3) with configurable block size, associativity, and replacement policies. \n• \nInstrumented detailed cache statistics (hits, misses, access patterns) to analyze memory performance. \nTechnologies: C, Memory Allocation, Cache Architecture, Pointers, Low-level Systems Programming \nProject Repository : https://github.com/saralgupta09/memory-simulator \n Awards / Scholarships / Academic Achievements \nJEE Advanced 2024: All India Rank 3564 \nJEE Main 2024 : 99.67 percentile, AIR 5345 among 14.5 lakh candidates \nAcademic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6284131936169172
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_4",
+            "text": "Academic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n• \nProbability & Statistics — Grade 10 (Top 140 / 1400 students(approx) ) \n• \nNetwork Theory — Grade 10 (Top 14 / 170 students) \n• \nLinear Algebra & Vector Calculus — Grade 9 \n Skills \nProgramming Languages: C++, Python, C, HTML, CSS \nML & Data Science: TensorFlow,Keras, Scikit-learn, Pandas, NumPy, Matplotlib \nSystems & CS: Memory Allocation, Cache Architecture, Pointers, Low-level C,Low Level Design \nTools: Git, VS Code \n Key Coursework \nData Structures & Algorithms, Probability & Statistics, Linear Algebra & Vector Calculus,Network Theory, Signals and Systems \n Positions of Responsibility & Extra Curriculars",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.5880980092831458
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_2",
+            "text": "• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n• \nImproved performance over tabular models through deep spatial feature extraction (CNNs). \n• \nApplied Grad-CAM visualizations to interpret price-driving regions in satellite imagery. \nTechnologies: Python, TensorFlow/Keras, CNNs, Pandas, NumPy, Scikit-learn \nProject Repository : https://github.com/saralgupta09/House-Price-Prediction-Model \n \nMemory Allocation and CPU Cache Simulation in C| IIT Roorkee \n \n• \nDesigned and implemented a C-based memory simulator modeling heap allocation, cache hierarchy, and memory access behavior. \n• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.5775747329228518
+          }
+        ]
+      }
+    ],
+    "selected_document": {
+      "doc_id": "20260527_154658_my_resume_pdf",
+      "filename": "20260527_154658_my resume.pdf",
+      "total_pages": 1,
+      "chunk_count": 6,
+      "ocr_applied": false,
+      "upload_timestamp": "2026-05-27T15:46:58.545340+00:00"
+    },
+    "preview_document": {
+      "doc_id": "20260527_154658_my_resume_pdf",
+      "filename": "20260527_154658_my resume.pdf",
+      "total_pages": 1,
+      "chunk_count": 6,
+      "ocr_applied": false,
+      "upload_timestamp": "2026-05-27T15:46:58.545340+00:00"
+    },
+    "retrieved_sources": [
+      {
+        "filename": "20260527_154658_my resume.pdf",
+        "page": 1,
+        "chunk_id": "20260527_154658_my_resume_pdf_5",
+        "excerpt": "Positions of Responsibility & Extra Curriculars \nBranch Coordinator, Student Mentorship Programme (SMP), IIT Roorkee \n• \nActed as the primary liaison between seniors and first-year students of the bra...",
+        "score": 0.7
+      }
+    ],
+    "highlights": [
+      {
+        "chunk_id": "20260527_154658_my_resume_pdf_5",
+        "text": "Positions of Responsibility & Extra Curriculars \nBranch Coordinator, Student Mentorship Programme (SMP), IIT Roorkee \n• \nActed as the primary liaison between seniors and first-year students of the branch; coordinated mentoring activities, addressed academic concerns, \nand ensured smooth information flow. \nMember, Electrical Vertical, Team KNOx, IIT Roorkee \n• \nContributed to the electrical subsystem of the team by assisting in circuit design, component selection, and integration with mechanical and control \nmodules.",
+        "page_num": 1,
+        "filename": "20260527_154658_my resume.pdf",
+        "score": 0.7
+      },
+      {
+        "chunk_id": "20260527_154658_my_resume_pdf_1",
+        "text": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems across Codeforces, LeetCode, and GeeksforGeeks \nStrong proficiency in C++, with solid understanding of DSA (arrays, recursion, sorting, binary search, trees, graphs, dynamic programming) \n Projects \nCNN Based House Price Prediction Model | IIT Roorkee \n• \nBuilt a CNN-based hybrid house price prediction model using satellite images + tabular features (R² ≈ 0.86). \n• \nImplemented custom multimodal training pipelines for synchronized image and tabular data. \n• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n•",
+        "page_num": 1,
+        "filename": "20260527_154658_my resume.pdf",
+        "score": 0.6378256320072486
+      },
+      {
+        "chunk_id": "20260527_154658_my_resume_pdf_3",
+        "text": "• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n• \nSimulated multi-level CPU caches (L1/L2/L3) with configurable block size, associativity, and replacement policies. \n• \nInstrumented detailed cache statistics (hits, misses, access patterns) to analyze memory performance. \nTechnologies: C, Memory Allocation, Cache Architecture, Pointers, Low-level Systems Programming \nProject Repository : https://github.com/saralgupta09/memory-simulator \n Awards / Scholarships / Academic Achievements \nJEE Advanced 2024: All India Rank 3564 \nJEE Main 2024 : 99.67 percentile, AIR 5345 among 14.5 lakh candidates \nAcademic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n•",
+        "page_num": 1,
+        "filename": "20260527_154658_my resume.pdf",
+        "score": 0.6284131936169172
+      },
+      {
+        "chunk_id": "20260527_154658_my_resume_pdf_4",
+        "text": "Academic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n• \nProbability & Statistics — Grade 10 (Top 140 / 1400 students(approx) ) \n• \nNetwork Theory — Grade 10 (Top 14 / 170 students) \n• \nLinear Algebra & Vector Calculus — Grade 9 \n Skills \nProgramming Languages: C++, Python, C, HTML, CSS \nML & Data Science: TensorFlow,Keras, Scikit-learn, Pandas, NumPy, Matplotlib \nSystems & CS: Memory Allocation, Cache Architecture, Pointers, Low-level C,Low Level Design \nTools: Git, VS Code \n Key Coursework \nData Structures & Algorithms, Probability & Statistics, Linear Algebra & Vector Calculus,Network Theory, Signals and Systems \n Positions of Responsibility & Extra Curriculars",
+        "page_num": 1,
+        "filename": "20260527_154658_my resume.pdf",
+        "score": 0.5880980092831458
+      },
+      {
+        "chunk_id": "20260527_154658_my_resume_pdf_2",
+        "text": "• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n• \nImproved performance over tabular models through deep spatial feature extraction (CNNs). \n• \nApplied Grad-CAM visualizations to interpret price-driving regions in satellite imagery. \nTechnologies: Python, TensorFlow/Keras, CNNs, Pandas, NumPy, Scikit-learn \nProject Repository : https://github.com/saralgupta09/House-Price-Prediction-Model \n \nMemory Allocation and CPU Cache Simulation in C| IIT Roorkee \n \n• \nDesigned and implemented a C-based memory simulator modeling heap allocation, cache hierarchy, and memory access behavior. \n• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n•",
+        "page_num": 1,
+        "filename": "20260527_154658_my resume.pdf",
+        "score": 0.5775747329228518
+      }
+    ]
+  },
+  "d7aa27e6-c8e4-4d95-8aae-e390d998dc21": {
+    "session_id": "d7aa27e6-c8e4-4d95-8aae-e390d998dc21",
+    "title": "give me 6 points from these document",
+    "created_at": "2026-05-27T17:34:52.908962+00:00",
+    "updated_at": "2026-05-27T18:04:43.600396+00:00",
+    "messages": [
+      {
+        "id": "0590255a-fedd-429d-bba1-c9303763e585",
+        "timestamp": "2026-05-27T17:34:52.856Z",
+        "role": "user",
+        "content": "give me 6 points from these document"
+      },
+      {
+        "id": "ce8af841-c677-4b03-9684-f3b515a6b031",
+        "timestamp": "2026-05-27T17:35:25.971Z",
+        "role": "assistant",
+        "content": "Answer generation failed: LLM generation failed: 403 PERMISSION_DENIED. {'error': {'code': 403, 'message': 'Your API key was reported as leaked. Please use another API key.', 'status': 'PERMISSION_DENIED'}}",
+        "sources": [
+          {
+            "filename": "20260527_154658_my resume.pdf",
+            "page": 1,
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "excerpt": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems...",
+            "score": 0.7
+          }
+        ],
+        "rewrittenQuery": "give me 6 points from these document",
+        "processingMs": 33074,
+        "chunksRetrieved": 5,
+        "docIdFilter": "20260527_154658_my_resume_pdf",
+        "retrievedChunks": [
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "text": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems across Codeforces, LeetCode, and GeeksforGeeks \nStrong proficiency in C++, with solid understanding of DSA (arrays, recursion, sorting, binary search, trees, graphs, dynamic programming) \n Projects \nCNN Based House Price Prediction Model | IIT Roorkee \n• \nBuilt a CNN-based hybrid house price prediction model using satellite images + tabular features (R² ≈ 0.86). \n• \nImplemented custom multimodal training pipelines for synchronized image and tabular data. \n• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.7
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_4",
+            "text": "Academic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n• \nProbability & Statistics — Grade 10 (Top 140 / 1400 students(approx) ) \n• \nNetwork Theory — Grade 10 (Top 14 / 170 students) \n• \nLinear Algebra & Vector Calculus — Grade 9 \n Skills \nProgramming Languages: C++, Python, C, HTML, CSS \nML & Data Science: TensorFlow,Keras, Scikit-learn, Pandas, NumPy, Matplotlib \nSystems & CS: Memory Allocation, Cache Architecture, Pointers, Low-level C,Low Level Design \nTools: Git, VS Code \n Key Coursework \nData Structures & Algorithms, Probability & Statistics, Linear Algebra & Vector Calculus,Network Theory, Signals and Systems \n Positions of Responsibility & Extra Curriculars",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.672769208034648
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_2",
+            "text": "• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n• \nImproved performance over tabular models through deep spatial feature extraction (CNNs). \n• \nApplied Grad-CAM visualizations to interpret price-driving regions in satellite imagery. \nTechnologies: Python, TensorFlow/Keras, CNNs, Pandas, NumPy, Scikit-learn \nProject Repository : https://github.com/saralgupta09/House-Price-Prediction-Model \n \nMemory Allocation and CPU Cache Simulation in C| IIT Roorkee \n \n• \nDesigned and implemented a C-based memory simulator modeling heap allocation, cache hierarchy, and memory access behavior. \n• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6420597063582856
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_3",
+            "text": "• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n• \nSimulated multi-level CPU caches (L1/L2/L3) with configurable block size, associativity, and replacement policies. \n• \nInstrumented detailed cache statistics (hits, misses, access patterns) to analyze memory performance. \nTechnologies: C, Memory Allocation, Cache Architecture, Pointers, Low-level Systems Programming \nProject Repository : https://github.com/saralgupta09/memory-simulator \n Awards / Scholarships / Academic Achievements \nJEE Advanced 2024: All India Rank 3564 \nJEE Main 2024 : 99.67 percentile, AIR 5345 among 14.5 lakh candidates \nAcademic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6366544420034089
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_5",
+            "text": "Positions of Responsibility & Extra Curriculars \nBranch Coordinator, Student Mentorship Programme (SMP), IIT Roorkee \n• \nActed as the primary liaison between seniors and first-year students of the branch; coordinated mentoring activities, addressed academic concerns, \nand ensured smooth information flow. \nMember, Electrical Vertical, Team KNOx, IIT Roorkee \n• \nContributed to the electrical subsystem of the team by assisting in circuit design, component selection, and integration with mechanical and control \nmodules.",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6222036899248323
+          }
+        ]
+      },
+      {
+        "id": "adf73b99-40bb-4684-92f3-acee74468e9b",
+        "timestamp": "2026-05-27T17:35:44.707Z",
+        "role": "user",
+        "content": "hello"
+      },
+      {
+        "id": "01ecabbf-695f-41cd-96d3-1cd632158686",
+        "role": "user",
+        "content": "hello",
+        "timestamp": "2026-05-27T17:35:44.716971+00:00"
+      },
+      {
+        "id": "ac5274db-6f5a-49ed-b451-5a4b8214db5e",
+        "role": "assistant",
+        "content": "Answer generation failed: LLM generation failed: 403 PERMISSION_DENIED. {'error': {'code': 403, 'message': 'Your API key was reported as leaked. Please use another API key.', 'status': 'PERMISSION_DENIED'}}",
+        "timestamp": "2026-05-27T17:35:46.372326+00:00",
+        "sources": [
+          {
+            "filename": "20260527_154658_my resume.pdf",
+            "page": 1,
+            "chunk_id": "20260527_154658_my_resume_pdf_3",
+            "excerpt": "• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n• \nSimulated multi-level CPU caches (L1/L2/L3) with configurable block size, associativity, and replacement...",
+            "score": 0.7
+          }
+        ],
+        "rewrittenQuery": "hello",
+        "processingMs": 1653,
+        "chunksRetrieved": 5,
+        "docIdFilter": "20260527_154658_my_resume_pdf",
+        "retrievedChunks": [
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_3",
+            "text": "• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n• \nSimulated multi-level CPU caches (L1/L2/L3) with configurable block size, associativity, and replacement policies. \n• \nInstrumented detailed cache statistics (hits, misses, access patterns) to analyze memory performance. \nTechnologies: C, Memory Allocation, Cache Architecture, Pointers, Low-level Systems Programming \nProject Repository : https://github.com/saralgupta09/memory-simulator \n Awards / Scholarships / Academic Achievements \nJEE Advanced 2024: All India Rank 3564 \nJEE Main 2024 : 99.67 percentile, AIR 5345 among 14.5 lakh candidates \nAcademic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.7
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_5",
+            "text": "Positions of Responsibility & Extra Curriculars \nBranch Coordinator, Student Mentorship Programme (SMP), IIT Roorkee \n• \nActed as the primary liaison between seniors and first-year students of the branch; coordinated mentoring activities, addressed academic concerns, \nand ensured smooth information flow. \nMember, Electrical Vertical, Team KNOx, IIT Roorkee \n• \nContributed to the electrical subsystem of the team by assisting in circuit design, component selection, and integration with mechanical and control \nmodules.",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6900640046071933
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "text": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems across Codeforces, LeetCode, and GeeksforGeeks \nStrong proficiency in C++, with solid understanding of DSA (arrays, recursion, sorting, binary search, trees, graphs, dynamic programming) \n Projects \nCNN Based House Price Prediction Model | IIT Roorkee \n• \nBuilt a CNN-based hybrid house price prediction model using satellite images + tabular features (R² ≈ 0.86). \n• \nImplemented custom multimodal training pipelines for synchronized image and tabular data. \n• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6862223230836983
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_4",
+            "text": "Academic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n• \nProbability & Statistics — Grade 10 (Top 140 / 1400 students(approx) ) \n• \nNetwork Theory — Grade 10 (Top 14 / 170 students) \n• \nLinear Algebra & Vector Calculus — Grade 9 \n Skills \nProgramming Languages: C++, Python, C, HTML, CSS \nML & Data Science: TensorFlow,Keras, Scikit-learn, Pandas, NumPy, Matplotlib \nSystems & CS: Memory Allocation, Cache Architecture, Pointers, Low-level C,Low Level Design \nTools: Git, VS Code \n Key Coursework \nData Structures & Algorithms, Probability & Statistics, Linear Algebra & Vector Calculus,Network Theory, Signals and Systems \n Positions of Responsibility & Extra Curriculars",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6492823346546511
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_2",
+            "text": "• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n• \nImproved performance over tabular models through deep spatial feature extraction (CNNs). \n• \nApplied Grad-CAM visualizations to interpret price-driving regions in satellite imagery. \nTechnologies: Python, TensorFlow/Keras, CNNs, Pandas, NumPy, Scikit-learn \nProject Repository : https://github.com/saralgupta09/House-Price-Prediction-Model \n \nMemory Allocation and CPU Cache Simulation in C| IIT Roorkee \n \n• \nDesigned and implemented a C-based memory simulator modeling heap allocation, cache hierarchy, and memory access behavior. \n• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6445433824627494
+          }
+        ]
+      },
+      {
+        "id": "4663924e-43dc-407e-ba10-94d5f4d35d5c",
+        "timestamp": "2026-05-27T17:48:48.743Z",
+        "role": "user",
+        "content": "summarize this document in three points"
+      },
+      {
+        "id": "336153fd-b58d-4800-9276-f1c0526eb7c2",
+        "timestamp": "2026-05-27T17:49:13.301Z",
+        "role": "assistant",
+        "content": "Answer generation failed: LLM generation failed: 400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Please pass a valid API key.', 'status': 'INVALID_ARGUMENT', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]}}",
+        "sources": [
+          {
+            "filename": "20260527_154658_my resume.pdf",
+            "page": 1,
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "excerpt": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems...",
+            "score": 0.7
+          }
+        ],
+        "rewrittenQuery": "summarize this document in three points",
+        "processingMs": 24518,
+        "chunksRetrieved": 5,
+        "docIdFilter": "20260527_154658_my_resume_pdf",
+        "retrievedChunks": [
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "text": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems across Codeforces, LeetCode, and GeeksforGeeks \nStrong proficiency in C++, with solid understanding of DSA (arrays, recursion, sorting, binary search, trees, graphs, dynamic programming) \n Projects \nCNN Based House Price Prediction Model | IIT Roorkee \n• \nBuilt a CNN-based hybrid house price prediction model using satellite images + tabular features (R² ≈ 0.86). \n• \nImplemented custom multimodal training pipelines for synchronized image and tabular data. \n• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.7
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_4",
+            "text": "Academic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n• \nProbability & Statistics — Grade 10 (Top 140 / 1400 students(approx) ) \n• \nNetwork Theory — Grade 10 (Top 14 / 170 students) \n• \nLinear Algebra & Vector Calculus — Grade 9 \n Skills \nProgramming Languages: C++, Python, C, HTML, CSS \nML & Data Science: TensorFlow,Keras, Scikit-learn, Pandas, NumPy, Matplotlib \nSystems & CS: Memory Allocation, Cache Architecture, Pointers, Low-level C,Low Level Design \nTools: Git, VS Code \n Key Coursework \nData Structures & Algorithms, Probability & Statistics, Linear Algebra & Vector Calculus,Network Theory, Signals and Systems \n Positions of Responsibility & Extra Curriculars",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6984230496299831
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_2",
+            "text": "• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n• \nImproved performance over tabular models through deep spatial feature extraction (CNNs). \n• \nApplied Grad-CAM visualizations to interpret price-driving regions in satellite imagery. \nTechnologies: Python, TensorFlow/Keras, CNNs, Pandas, NumPy, Scikit-learn \nProject Repository : https://github.com/saralgupta09/House-Price-Prediction-Model \n \nMemory Allocation and CPU Cache Simulation in C| IIT Roorkee \n \n• \nDesigned and implemented a C-based memory simulator modeling heap allocation, cache hierarchy, and memory access behavior. \n• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6671308915304204
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_3",
+            "text": "• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n• \nSimulated multi-level CPU caches (L1/L2/L3) with configurable block size, associativity, and replacement policies. \n• \nInstrumented detailed cache statistics (hits, misses, access patterns) to analyze memory performance. \nTechnologies: C, Memory Allocation, Cache Architecture, Pointers, Low-level Systems Programming \nProject Repository : https://github.com/saralgupta09/memory-simulator \n Awards / Scholarships / Academic Achievements \nJEE Advanced 2024: All India Rank 3564 \nJEE Main 2024 : 99.67 percentile, AIR 5345 among 14.5 lakh candidates \nAcademic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.643412274668556
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_5",
+            "text": "Positions of Responsibility & Extra Curriculars \nBranch Coordinator, Student Mentorship Programme (SMP), IIT Roorkee \n• \nActed as the primary liaison between seniors and first-year students of the branch; coordinated mentoring activities, addressed academic concerns, \nand ensured smooth information flow. \nMember, Electrical Vertical, Team KNOx, IIT Roorkee \n• \nContributed to the electrical subsystem of the team by assisting in circuit design, component selection, and integration with mechanical and control \nmodules.",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6398480696135479
+          }
+        ]
+      },
+      {
+        "id": "30ebd21e-63a9-45a5-8dbe-6a985b66cb86",
+        "timestamp": "2026-05-27T17:51:27.931Z",
+        "role": "user",
+        "content": "summarize this document in 3 points"
+      },
+      {
+        "id": "3d95be03-fca5-4fa4-802f-6534d0d6a35c",
+        "timestamp": "2026-05-27T17:52:03.586Z",
+        "role": "assistant",
+        "content": "Here's a 3-point summary of the document:\n\n1.  The individual demonstrates strong competitive programming skills with a CodeChef rating of 1792 (Global Rank 44) and a Codeforces rating of 1435, having solved over 90,000 problems across platforms, showcasing proficiency in C++ and Data Structures & Algorithms (Source 1).\n2.  Key projects include a CNN-based House Price Prediction Model (R² ≈ 0.86) utilizing satellite images and tabular features, and a C-based Memory Allocation and CPU Cache Simulation, highlighting expertise in ML/Data Science (Python, TensorFlow/Keras) and low-level systems programming (C, Memory Allocation, Cache Architecture) (Source 1, 3, 5).\n3.  Academically, the individual achieved Grade 10 in Data Structures & Algorithms, Probability & Statistics, and Network Theory at IIT Roorkee, and possesses skills in",
+        "sources": [
+          {
+            "filename": "20260527_154658_my resume.pdf",
+            "page": 1,
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "excerpt": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems...",
+            "score": 0.7
+          }
+        ],
+        "rewrittenQuery": "Document summary in",
+        "processingMs": 35618,
+        "chunksRetrieved": 5,
+        "docIdFilter": "20260527_154658_my_resume_pdf",
+        "retrievedChunks": [
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "text": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems across Codeforces, LeetCode, and GeeksforGeeks \nStrong proficiency in C++, with solid understanding of DSA (arrays, recursion, sorting, binary search, trees, graphs, dynamic programming) \n Projects \nCNN Based House Price Prediction Model | IIT Roorkee \n• \nBuilt a CNN-based hybrid house price prediction model using satellite images + tabular features (R² ≈ 0.86). \n• \nImplemented custom multimodal training pipelines for synchronized image and tabular data. \n• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.7
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_4",
+            "text": "Academic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n• \nProbability & Statistics — Grade 10 (Top 140 / 1400 students(approx) ) \n• \nNetwork Theory — Grade 10 (Top 14 / 170 students) \n• \nLinear Algebra & Vector Calculus — Grade 9 \n Skills \nProgramming Languages: C++, Python, C, HTML, CSS \nML & Data Science: TensorFlow,Keras, Scikit-learn, Pandas, NumPy, Matplotlib \nSystems & CS: Memory Allocation, Cache Architecture, Pointers, Low-level C,Low Level Design \nTools: Git, VS Code \n Key Coursework \nData Structures & Algorithms, Probability & Statistics, Linear Algebra & Vector Calculus,Network Theory, Signals and Systems \n Positions of Responsibility & Extra Curriculars",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6959996983771108
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_2",
+            "text": "• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n• \nImproved performance over tabular models through deep spatial feature extraction (CNNs). \n• \nApplied Grad-CAM visualizations to interpret price-driving regions in satellite imagery. \nTechnologies: Python, TensorFlow/Keras, CNNs, Pandas, NumPy, Scikit-learn \nProject Repository : https://github.com/saralgupta09/House-Price-Prediction-Model \n \nMemory Allocation and CPU Cache Simulation in C| IIT Roorkee \n \n• \nDesigned and implemented a C-based memory simulator modeling heap allocation, cache hierarchy, and memory access behavior. \n• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6828976217667068
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_5",
+            "text": "Positions of Responsibility & Extra Curriculars \nBranch Coordinator, Student Mentorship Programme (SMP), IIT Roorkee \n• \nActed as the primary liaison between seniors and first-year students of the branch; coordinated mentoring activities, addressed academic concerns, \nand ensured smooth information flow. \nMember, Electrical Vertical, Team KNOx, IIT Roorkee \n• \nContributed to the electrical subsystem of the team by assisting in circuit design, component selection, and integration with mechanical and control \nmodules.",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6656967427130516
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_3",
+            "text": "• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n• \nSimulated multi-level CPU caches (L1/L2/L3) with configurable block size, associativity, and replacement policies. \n• \nInstrumented detailed cache statistics (hits, misses, access patterns) to analyze memory performance. \nTechnologies: C, Memory Allocation, Cache Architecture, Pointers, Low-level Systems Programming \nProject Repository : https://github.com/saralgupta09/memory-simulator \n Awards / Scholarships / Academic Achievements \nJEE Advanced 2024: All India Rank 3564 \nJEE Main 2024 : 99.67 percentile, AIR 5345 among 14.5 lakh candidates \nAcademic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6644420614441042
+          }
+        ]
+      },
+      {
+        "id": "9b0b6d81-08e3-4c61-abac-ae504a018585",
+        "timestamp": "2026-05-27T17:55:34.348Z",
+        "role": "assistant",
+        "content": "Answer generation failed: LLM generation failed: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\\nPlease retry in 25.584014528s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_input_token_count', 'quotaId': 'GenerateContentInputTokensPerModelPerMinute-FreeTier', 'quotaDimensions': {'model': 'gemini-2.0-flash', 'location': 'global'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '25s'}]}}",
+        "sources": [
+          {
+            "filename": "20260527_154658_my resume.pdf",
+            "page": 1,
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "excerpt": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems...",
+            "score": 0.7
+          }
+        ],
+        "rewrittenQuery": "waht is this document about",
+        "processingMs": 22249,
+        "chunksRetrieved": 5,
+        "docIdFilter": "20260527_154658_my_resume_pdf",
+        "retrievedChunks": [
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "text": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems across Codeforces, LeetCode, and GeeksforGeeks \nStrong proficiency in C++, with solid understanding of DSA (arrays, recursion, sorting, binary search, trees, graphs, dynamic programming) \n Projects \nCNN Based House Price Prediction Model | IIT Roorkee \n• \nBuilt a CNN-based hybrid house price prediction model using satellite images + tabular features (R² ≈ 0.86). \n• \nImplemented custom multimodal training pipelines for synchronized image and tabular data. \n• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.7
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_5",
+            "text": "Positions of Responsibility & Extra Curriculars \nBranch Coordinator, Student Mentorship Programme (SMP), IIT Roorkee \n• \nActed as the primary liaison between seniors and first-year students of the branch; coordinated mentoring activities, addressed academic concerns, \nand ensured smooth information flow. \nMember, Electrical Vertical, Team KNOx, IIT Roorkee \n• \nContributed to the electrical subsystem of the team by assisting in circuit design, component selection, and integration with mechanical and control \nmodules.",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6589634376100477
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_4",
+            "text": "Academic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n• \nProbability & Statistics — Grade 10 (Top 140 / 1400 students(approx) ) \n• \nNetwork Theory — Grade 10 (Top 14 / 170 students) \n• \nLinear Algebra & Vector Calculus — Grade 9 \n Skills \nProgramming Languages: C++, Python, C, HTML, CSS \nML & Data Science: TensorFlow,Keras, Scikit-learn, Pandas, NumPy, Matplotlib \nSystems & CS: Memory Allocation, Cache Architecture, Pointers, Low-level C,Low Level Design \nTools: Git, VS Code \n Key Coursework \nData Structures & Algorithms, Probability & Statistics, Linear Algebra & Vector Calculus,Network Theory, Signals and Systems \n Positions of Responsibility & Extra Curriculars",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6472856690418649
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_3",
+            "text": "• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n• \nSimulated multi-level CPU caches (L1/L2/L3) with configurable block size, associativity, and replacement policies. \n• \nInstrumented detailed cache statistics (hits, misses, access patterns) to analyze memory performance. \nTechnologies: C, Memory Allocation, Cache Architecture, Pointers, Low-level Systems Programming \nProject Repository : https://github.com/saralgupta09/memory-simulator \n Awards / Scholarships / Academic Achievements \nJEE Advanced 2024: All India Rank 3564 \nJEE Main 2024 : 99.67 percentile, AIR 5345 among 14.5 lakh candidates \nAcademic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.639926128554579
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_2",
+            "text": "• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n• \nImproved performance over tabular models through deep spatial feature extraction (CNNs). \n• \nApplied Grad-CAM visualizations to interpret price-driving regions in satellite imagery. \nTechnologies: Python, TensorFlow/Keras, CNNs, Pandas, NumPy, Scikit-learn \nProject Repository : https://github.com/saralgupta09/House-Price-Prediction-Model \n \nMemory Allocation and CPU Cache Simulation in C| IIT Roorkee \n \n• \nDesigned and implemented a C-based memory simulator modeling heap allocation, cache hierarchy, and memory access behavior. \n• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6377106925788548
+          }
+        ]
+      },
+      {
+        "id": "f37fd24a-f9dc-4b42-b285-61d9a93753a4",
+        "timestamp": "2026-05-27T18:02:56.769Z",
+        "role": "user",
+        "content": "can you tell me about saral gupta by looking in this documen"
+      },
+      {
+        "id": "9be6ef2a-e729-4b11-b49f-0351ce49f41d",
+        "timestamp": "2026-05-27T18:03:00.684Z",
+        "role": "assistant",
+        "content": "Answer generation failed: LLM generation failed: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+        "sources": [
+          {
+            "filename": "20260527_154658_my resume.pdf",
+            "page": 1,
+            "chunk_id": "20260527_154658_my_resume_pdf_2",
+            "excerpt": "• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n• \nImproved performance over tabular models through deep spatial featur...",
+            "score": 0.7
+          }
+        ],
+        "rewrittenQuery": "sar",
+        "processingMs": 3877,
+        "chunksRetrieved": 5,
+        "docIdFilter": "20260527_154658_my_resume_pdf",
+        "retrievedChunks": [
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_2",
+            "text": "• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n• \nImproved performance over tabular models through deep spatial feature extraction (CNNs). \n• \nApplied Grad-CAM visualizations to interpret price-driving regions in satellite imagery. \nTechnologies: Python, TensorFlow/Keras, CNNs, Pandas, NumPy, Scikit-learn \nProject Repository : https://github.com/saralgupta09/House-Price-Prediction-Model \n \nMemory Allocation and CPU Cache Simulation in C| IIT Roorkee \n \n• \nDesigned and implemented a C-based memory simulator modeling heap allocation, cache hierarchy, and memory access behavior. \n• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.7
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "text": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems across Codeforces, LeetCode, and GeeksforGeeks \nStrong proficiency in C++, with solid understanding of DSA (arrays, recursion, sorting, binary search, trees, graphs, dynamic programming) \n Projects \nCNN Based House Price Prediction Model | IIT Roorkee \n• \nBuilt a CNN-based hybrid house price prediction model using satellite images + tabular features (R² ≈ 0.86). \n• \nImplemented custom multimodal training pipelines for synchronized image and tabular data. \n• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6839449881588452
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_3",
+            "text": "• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n• \nSimulated multi-level CPU caches (L1/L2/L3) with configurable block size, associativity, and replacement policies. \n• \nInstrumented detailed cache statistics (hits, misses, access patterns) to analyze memory performance. \nTechnologies: C, Memory Allocation, Cache Architecture, Pointers, Low-level Systems Programming \nProject Repository : https://github.com/saralgupta09/memory-simulator \n Awards / Scholarships / Academic Achievements \nJEE Advanced 2024: All India Rank 3564 \nJEE Main 2024 : 99.67 percentile, AIR 5345 among 14.5 lakh candidates \nAcademic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6408437797403309
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_0",
+            "text": "SARAL GUPTA \nB.Tech. Electrical Engineering \nIndian Institute of \nUG(II Year) \nTechnology \nContact No: 9753455795 | Email : saral_g@ee.iitr.ac.in \nRoorkee \nProfiles: Codeforces | CodeChef | GitHub | LinkedIn \n Area of Interest \nData Structures and Algorithms, Software Development, Machine Learning \n Education \nYear \nDegree/Examination \nInstitution/Board \nCGPA/Percentage \n2026 \nB.Tech. 2nd Year \nIndian Institute of Technology, Roorkee \n8.617 \n2024 \n12th \nExcellent Academy, Mandleshwar \n86 % \n2022 \n10th \nShri Kanwartara Public Higher Secondary School, Mandleshwar \n93.2 % \n Competitive Programming / Data Structures and Alogorithms \nCodeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057)",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6233405530706222
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_4",
+            "text": "Academic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n• \nProbability & Statistics — Grade 10 (Top 140 / 1400 students(approx) ) \n• \nNetwork Theory — Grade 10 (Top 14 / 170 students) \n• \nLinear Algebra & Vector Calculus — Grade 9 \n Skills \nProgramming Languages: C++, Python, C, HTML, CSS \nML & Data Science: TensorFlow,Keras, Scikit-learn, Pandas, NumPy, Matplotlib \nSystems & CS: Memory Allocation, Cache Architecture, Pointers, Low-level C,Low Level Design \nTools: Git, VS Code \n Key Coursework \nData Structures & Algorithms, Probability & Statistics, Linear Algebra & Vector Calculus,Network Theory, Signals and Systems \n Positions of Responsibility & Extra Curriculars",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6149030547831762
+          }
+        ]
+      },
+      {
+        "id": "4ea1bb92-104b-49ff-898a-783fa747a359",
+        "timestamp": "2026-05-27T18:03:42.517Z",
+        "role": "user",
+        "content": "can you tell me about saral gupta by looking in this document"
+      },
+      {
+        "id": "1dfb542d-0dd6-48ff-8923-bb48ddeada57",
+        "timestamp": "2026-05-27T18:03:50.257Z",
+        "role": "assistant",
+        "content": "Saral Gupta is a B.Tech. Electrical Engineering student in their second year at the Indian Institute of Technology, Roorkee, with a current CGPA of 8.61",
+        "sources": [
+          {
+            "filename": "20260527_154658_my resume.pdf",
+            "page": 1,
+            "chunk_id": "20260527_154658_my_resume_pdf_0",
+            "excerpt": "SARAL GUPTA \nB.Tech. Electrical Engineering \nIndian Institute of \nUG(II Year) \nTechnology \nContact No: 9753455795 | Email : saral_g@ee.iitr.ac.in \nRoorkee \nProfiles: Codeforces | CodeChef | GitHub | L...",
+            "score": 1
+          }
+        ],
+        "rewrittenQuery": "can you tell me about saral gupta by looking",
+        "processingMs": 7692,
+        "chunksRetrieved": 5,
+        "docIdFilter": "20260527_154658_my_resume_pdf",
+        "retrievedChunks": [
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_0",
+            "text": "SARAL GUPTA \nB.Tech. Electrical Engineering \nIndian Institute of \nUG(II Year) \nTechnology \nContact No: 9753455795 | Email : saral_g@ee.iitr.ac.in \nRoorkee \nProfiles: Codeforces | CodeChef | GitHub | LinkedIn \n Area of Interest \nData Structures and Algorithms, Software Development, Machine Learning \n Education \nYear \nDegree/Examination \nInstitution/Board \nCGPA/Percentage \n2026 \nB.Tech. 2nd Year \nIndian Institute of Technology, Roorkee \n8.617 \n2024 \n12th \nExcellent Academy, Mandleshwar \n86 % \n2022 \n10th \nShri Kanwartara Public Higher Secondary School, Mandleshwar \n93.2 % \n Competitive Programming / Data Structures and Alogorithms \nCodeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057)",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 1
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_3",
+            "text": "• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n• \nSimulated multi-level CPU caches (L1/L2/L3) with configurable block size, associativity, and replacement policies. \n• \nInstrumented detailed cache statistics (hits, misses, access patterns) to analyze memory performance. \nTechnologies: C, Memory Allocation, Cache Architecture, Pointers, Low-level Systems Programming \nProject Repository : https://github.com/saralgupta09/memory-simulator \n Awards / Scholarships / Academic Achievements \nJEE Advanced 2024: All India Rank 3564 \nJEE Main 2024 : 99.67 percentile, AIR 5345 among 14.5 lakh candidates \nAcademic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.5956478266417137
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "text": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems across Codeforces, LeetCode, and GeeksforGeeks \nStrong proficiency in C++, with solid understanding of DSA (arrays, recursion, sorting, binary search, trees, graphs, dynamic programming) \n Projects \nCNN Based House Price Prediction Model | IIT Roorkee \n• \nBuilt a CNN-based hybrid house price prediction model using satellite images + tabular features (R² ≈ 0.86). \n• \nImplemented custom multimodal training pipelines for synchronized image and tabular data. \n• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.5829807949225408
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_2",
+            "text": "• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n• \nImproved performance over tabular models through deep spatial feature extraction (CNNs). \n• \nApplied Grad-CAM visualizations to interpret price-driving regions in satellite imagery. \nTechnologies: Python, TensorFlow/Keras, CNNs, Pandas, NumPy, Scikit-learn \nProject Repository : https://github.com/saralgupta09/House-Price-Prediction-Model \n \nMemory Allocation and CPU Cache Simulation in C| IIT Roorkee \n \n• \nDesigned and implemented a C-based memory simulator modeling heap allocation, cache hierarchy, and memory access behavior. \n• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.5206503826348565
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_4",
+            "text": "Academic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n• \nProbability & Statistics — Grade 10 (Top 140 / 1400 students(approx) ) \n• \nNetwork Theory — Grade 10 (Top 14 / 170 students) \n• \nLinear Algebra & Vector Calculus — Grade 9 \n Skills \nProgramming Languages: C++, Python, C, HTML, CSS \nML & Data Science: TensorFlow,Keras, Scikit-learn, Pandas, NumPy, Matplotlib \nSystems & CS: Memory Allocation, Cache Architecture, Pointers, Low-level C,Low Level Design \nTools: Git, VS Code \n Key Coursework \nData Structures & Algorithms, Probability & Statistics, Linear Algebra & Vector Calculus,Network Theory, Signals and Systems \n Positions of Responsibility & Extra Curriculars",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.49146785683115135
+          }
+        ]
+      },
+      {
+        "id": "9565fd42-df10-4b12-a247-ee83004594ed",
+        "timestamp": "2026-05-27T18:04:38.752Z",
+        "role": "user",
+        "content": "tell me about positions of responsibility and extra cirriiculars of saral gupta"
+      },
+      {
+        "id": "af7739ec-6e10-48b7-b06b-dfb241ba4527",
+        "timestamp": "2026-05-27T18:04:43.507Z",
+        "role": "assistant",
+        "content": "Saral Gupta holds the following positions of responsibility and extra-curriculars:\n\n*   **Branch Coordinator, Student Mentorship Programme (SMP), IIT Roorkee**: In this role, Saral acted as the primary liaison between seniors and first-year students, coordinating mentoring activities, addressing academic concerns, and ensuring smooth information flow (Source 1, Page 1).\n*   **Member, Electrical Vertical, Team KNOx, IIT Roorkee**: Saral contributed to the electrical subsystem of the team by assisting in circuit design, component selection, and integration with mechanical and control modules (Source 1, Page 1).",
+        "sources": [
+          {
+            "filename": "20260527_154658_my resume.pdf",
+            "page": 1,
+            "chunk_id": "20260527_154658_my_resume_pdf_5",
+            "excerpt": "Positions of Responsibility & Extra Curriculars \nBranch Coordinator, Student Mentorship Programme (SMP), IIT Roorkee \n• \nActed as the primary liaison between seniors and first-year students of the bra...",
+            "score": 1
+          }
+        ],
+        "rewrittenQuery": "positions of",
+        "processingMs": 4708,
+        "chunksRetrieved": 5,
+        "docIdFilter": "20260527_154658_my_resume_pdf",
+        "retrievedChunks": [
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_5",
+            "text": "Positions of Responsibility & Extra Curriculars \nBranch Coordinator, Student Mentorship Programme (SMP), IIT Roorkee \n• \nActed as the primary liaison between seniors and first-year students of the branch; coordinated mentoring activities, addressed academic concerns, \nand ensured smooth information flow. \nMember, Electrical Vertical, Team KNOx, IIT Roorkee \n• \nContributed to the electrical subsystem of the team by assisting in circuit design, component selection, and integration with mechanical and control \nmodules.",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 1
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_4",
+            "text": "Academic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n• \nProbability & Statistics — Grade 10 (Top 140 / 1400 students(approx) ) \n• \nNetwork Theory — Grade 10 (Top 14 / 170 students) \n• \nLinear Algebra & Vector Calculus — Grade 9 \n Skills \nProgramming Languages: C++, Python, C, HTML, CSS \nML & Data Science: TensorFlow,Keras, Scikit-learn, Pandas, NumPy, Matplotlib \nSystems & CS: Memory Allocation, Cache Architecture, Pointers, Low-level C,Low Level Design \nTools: Git, VS Code \n Key Coursework \nData Structures & Algorithms, Probability & Statistics, Linear Algebra & Vector Calculus,Network Theory, Signals and Systems \n Positions of Responsibility & Extra Curriculars",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.8735790193256847
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_0",
+            "text": "SARAL GUPTA \nB.Tech. Electrical Engineering \nIndian Institute of \nUG(II Year) \nTechnology \nContact No: 9753455795 | Email : saral_g@ee.iitr.ac.in \nRoorkee \nProfiles: Codeforces | CodeChef | GitHub | LinkedIn \n Area of Interest \nData Structures and Algorithms, Software Development, Machine Learning \n Education \nYear \nDegree/Examination \nInstitution/Board \nCGPA/Percentage \n2026 \nB.Tech. 2nd Year \nIndian Institute of Technology, Roorkee \n8.617 \n2024 \n12th \nExcellent Academy, Mandleshwar \n86 % \n2022 \n10th \nShri Kanwartara Public Higher Secondary School, Mandleshwar \n93.2 % \n Competitive Programming / Data Structures and Alogorithms \nCodeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057)",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.7215843778620831
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_1",
+            "text": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems across Codeforces, LeetCode, and GeeksforGeeks \nStrong proficiency in C++, with solid understanding of DSA (arrays, recursion, sorting, binary search, trees, graphs, dynamic programming) \n Projects \nCNN Based House Price Prediction Model | IIT Roorkee \n• \nBuilt a CNN-based hybrid house price prediction model using satellite images + tabular features (R² ≈ 0.86). \n• \nImplemented custom multimodal training pipelines for synchronized image and tabular data. \n• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6873382795466345
+          },
+          {
+            "chunk_id": "20260527_154658_my_resume_pdf_3",
+            "text": "• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n• \nSimulated multi-level CPU caches (L1/L2/L3) with configurable block size, associativity, and replacement policies. \n• \nInstrumented detailed cache statistics (hits, misses, access patterns) to analyze memory performance. \nTechnologies: C, Memory Allocation, Cache Architecture, Pointers, Low-level Systems Programming \nProject Repository : https://github.com/saralgupta09/memory-simulator \n Awards / Scholarships / Academic Achievements \nJEE Advanced 2024: All India Rank 3564 \nJEE Main 2024 : 99.67 percentile, AIR 5345 among 14.5 lakh candidates \nAcademic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n•",
+            "page_num": 1,
+            "filename": "20260527_154658_my resume.pdf",
+            "score": 0.6020754397751215
+          }
+        ]
+      }
+    ],
+    "selected_document": {
+      "doc_id": "20260527_154658_my_resume_pdf",
+      "filename": "20260527_154658_my resume.pdf",
+      "total_pages": 1,
+      "chunk_count": 6,
+      "ocr_applied": false,
+      "upload_timestamp": "2026-05-27T15:46:58.545340+00:00"
+    },
+    "preview_document": {
+      "doc_id": "20260527_154658_my_resume_pdf",
+      "filename": "20260527_154658_my resume.pdf",
+      "total_pages": 1,
+      "chunk_count": 6,
+      "ocr_applied": false,
+      "upload_timestamp": "2026-05-27T15:46:58.545340+00:00"
+    },
+    "retrieved_sources": [
+      {
+        "filename": "20260527_154658_my resume.pdf",
+        "page": 1,
+        "chunk_id": "20260527_154658_my_resume_pdf_5",
+        "excerpt": "Positions of Responsibility & Extra Curriculars \nBranch Coordinator, Student Mentorship Programme (SMP), IIT Roorkee \n• \nActed as the primary liaison between seniors and first-year students of the bra...",
+        "score": 1
+      }
+    ],
+    "highlights": [
+      {
+        "chunk_id": "20260527_154658_my_resume_pdf_5",
+        "text": "Positions of Responsibility & Extra Curriculars \nBranch Coordinator, Student Mentorship Programme (SMP), IIT Roorkee \n• \nActed as the primary liaison between seniors and first-year students of the branch; coordinated mentoring activities, addressed academic concerns, \nand ensured smooth information flow. \nMember, Electrical Vertical, Team KNOx, IIT Roorkee \n• \nContributed to the electrical subsystem of the team by assisting in circuit design, component selection, and integration with mechanical and control \nmodules.",
+        "page_num": 1,
+        "filename": "20260527_154658_my resume.pdf",
+        "score": 1
+      },
+      {
+        "chunk_id": "20260527_154658_my_resume_pdf_4",
+        "text": "Academic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n• \nProbability & Statistics — Grade 10 (Top 140 / 1400 students(approx) ) \n• \nNetwork Theory — Grade 10 (Top 14 / 170 students) \n• \nLinear Algebra & Vector Calculus — Grade 9 \n Skills \nProgramming Languages: C++, Python, C, HTML, CSS \nML & Data Science: TensorFlow,Keras, Scikit-learn, Pandas, NumPy, Matplotlib \nSystems & CS: Memory Allocation, Cache Architecture, Pointers, Low-level C,Low Level Design \nTools: Git, VS Code \n Key Coursework \nData Structures & Algorithms, Probability & Statistics, Linear Algebra & Vector Calculus,Network Theory, Signals and Systems \n Positions of Responsibility & Extra Curriculars",
+        "page_num": 1,
+        "filename": "20260527_154658_my resume.pdf",
+        "score": 0.8735790193256847
+      },
+      {
+        "chunk_id": "20260527_154658_my_resume_pdf_0",
+        "text": "SARAL GUPTA \nB.Tech. Electrical Engineering \nIndian Institute of \nUG(II Year) \nTechnology \nContact No: 9753455795 | Email : saral_g@ee.iitr.ac.in \nRoorkee \nProfiles: Codeforces | CodeChef | GitHub | LinkedIn \n Area of Interest \nData Structures and Algorithms, Software Development, Machine Learning \n Education \nYear \nDegree/Examination \nInstitution/Board \nCGPA/Percentage \n2026 \nB.Tech. 2nd Year \nIndian Institute of Technology, Roorkee \n8.617 \n2024 \n12th \nExcellent Academy, Mandleshwar \n86 % \n2022 \n10th \nShri Kanwartara Public Higher Secondary School, Mandleshwar \n93.2 % \n Competitive Programming / Data Structures and Alogorithms \nCodeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057)",
+        "page_num": 1,
+        "filename": "20260527_154658_my resume.pdf",
+        "score": 0.7215843778620831
+      },
+      {
+        "chunk_id": "20260527_154658_my_resume_pdf_1",
+        "text": "Codeforces (saralgupta95): Maximum rating 1435, Best global rank 2110 (Div. 2 Round 1057) \nCodeChef (saralgupta95): Highest rating 1792 — Global Rank 44 in Starters 211 (Rated) \nSolved 90000+ problems across Codeforces, LeetCode, and GeeksforGeeks \nStrong proficiency in C++, with solid understanding of DSA (arrays, recursion, sorting, binary search, trees, graphs, dynamic programming) \n Projects \nCNN Based House Price Prediction Model | IIT Roorkee \n• \nBuilt a CNN-based hybrid house price prediction model using satellite images + tabular features (R² ≈ 0.86). \n• \nImplemented custom multimodal training pipelines for synchronized image and tabular data. \n• \nAutomated satellite image acquisition via ArcGIS REST API, enabling large-scale geospatial data collection for CNN training. \n•",
+        "page_num": 1,
+        "filename": "20260527_154658_my resume.pdf",
+        "score": 0.6873382795466345
+      },
+      {
+        "chunk_id": "20260527_154658_my_resume_pdf_3",
+        "text": "• \nBuilt a custom dynamic memory allocator (malloc/free) using an emulated sbrk interface. \n• \nSimulated multi-level CPU caches (L1/L2/L3) with configurable block size, associativity, and replacement policies. \n• \nInstrumented detailed cache statistics (hits, misses, access patterns) to analyze memory performance. \nTechnologies: C, Memory Allocation, Cache Architecture, Pointers, Low-level Systems Programming \nProject Repository : https://github.com/saralgupta09/memory-simulator \n Awards / Scholarships / Academic Achievements \nJEE Advanced 2024: All India Rank 3564 \nJEE Main 2024 : 99.67 percentile, AIR 5345 among 14.5 lakh candidates \nAcademic Excellence (IIT Roorkee): \n• \nData Structures & Algorithms — Grade 10 (Top 40 / 400 students(approx) ) \n•",
+        "page_num": 1,
+        "filename": "20260527_154658_my resume.pdf",
+        "score": 0.6020754397751215
+      }
+    ]
+  }
+}

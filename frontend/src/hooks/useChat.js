@@ -1,26 +1,24 @@
-/**
- * hooks/useChat.js
- * ----------------
- * Highlight feature change (additive only):
- *
- *   addMessage() for the assistant role now also stores:
- *     retrievedChunks: data.retrieved_chunks ?? []
- *
- *   This is the array of { chunk_id, text, page_num, filename, score }
- *   objects returned by the updated ask.py.  App.jsx reads this field
- *   from the most-recent assistant message to derive highlights for
- *   PdfPreviewPanel.
- *
- * Nothing else changes: session persistence, send(), clearSession(),
- * error handling, doc_id filter forwarding (Feature 1) are all untouched.
- */
-
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { askQuestion } from '../api/client'
+import {
+  askQuestion,
+  deleteConversation,
+  fetchConversation,
+  fetchConversations,
+  saveConversation,
+} from '../api/client'
 
 const SESSION_KEY = 'docuintel_session_id'
 const MESSAGES_KEY = 'docuintel_messages'
+const CONVERSATIONS_KEY = 'docuintel_conversations'
+
+function safeJsonParse(raw, fallback) {
+  try {
+    return raw ? JSON.parse(raw) : fallback
+  } catch {
+    return fallback
+  }
+}
 
 function loadSession() {
   try {
@@ -31,13 +29,14 @@ function loadSession() {
 }
 
 function saveSession(id) {
-  try { localStorage.setItem(SESSION_KEY, id) } catch {}
+  try {
+    localStorage.setItem(SESSION_KEY, id)
+  } catch {}
 }
 
 function loadMessages() {
   try {
-    const raw = localStorage.getItem(MESSAGES_KEY)
-    return raw ? JSON.parse(raw) : []
+    return safeJsonParse(localStorage.getItem(MESSAGES_KEY), [])
   } catch {
     return []
   }
@@ -45,9 +44,50 @@ function loadMessages() {
 
 function saveMessages(msgs) {
   try {
-    const trimmed = msgs.slice(-100)
-    localStorage.setItem(MESSAGES_KEY, JSON.stringify(trimmed))
+    localStorage.setItem(MESSAGES_KEY, JSON.stringify(msgs.slice(-100)))
   } catch {}
+}
+
+function loadConversationSummaries() {
+  try {
+    return safeJsonParse(localStorage.getItem(CONVERSATIONS_KEY), [])
+  } catch {
+    return []
+  }
+}
+
+function saveConversationSummaries(conversations) {
+  try {
+    localStorage.setItem(CONVERSATIONS_KEY, JSON.stringify(conversations))
+  } catch {}
+}
+
+function getTitleFromMessages(messages) {
+  const firstUserMessage = messages.find((msg) => msg.role === 'user' && msg.content)
+  if (!firstUserMessage) return 'New chat'
+
+  const title = firstUserMessage.content.trim()
+  return title.length > 48 ? `${title.slice(0, 48)}...` : title
+}
+
+function buildSummary(conversation) {
+  const selectedDocument = conversation.selected_document || conversation.selectedDocument || null
+
+  return {
+    session_id: conversation.session_id,
+    title: conversation.title || getTitleFromMessages(conversation.messages || []),
+    created_at: conversation.created_at || conversation.createdAt || new Date().toISOString(),
+    updated_at: conversation.updated_at || conversation.updatedAt || new Date().toISOString(),
+    message_count: conversation.message_count || conversation.messages?.length || 0,
+    selected_document: selectedDocument,
+    selected_document_name: selectedDocument?.filename || null,
+  }
+}
+
+function mergeSummary(prev, summary) {
+  const next = [summary, ...prev.filter((item) => item.session_id !== summary.session_id)]
+  next.sort((a, b) => String(b.updated_at || '').localeCompare(String(a.updated_at || '')))
+  return next
 }
 
 export function useChat() {
@@ -58,24 +98,95 @@ export function useChat() {
   })
 
   const [messages, setMessages] = useState(() => loadMessages())
+  const [conversations, setConversations] = useState(() => loadConversationSummaries())
+  const [historyLoading, setHistoryLoading] = useState(false)
+  const [historyError, setHistoryError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
-  const abortRef = useRef(null)
 
-  const addMessage = useCallback((msg) => {
-    setMessages((prev) => {
-      const next = [...prev, { id: uuidv4(), timestamp: new Date().toISOString(), ...msg }]
-      saveMessages(next)
+  const snapshotRef = useRef(null)
+
+  const updateConversationList = useCallback((summary) => {
+    setConversations((prev) => {
+      const next = mergeSummary(prev, summary)
+      saveConversationSummaries(next)
       return next
     })
   }, [])
 
-  /**
-   * Send a question to the backend.
-   *
-   * @param {string} question         The user's question text.
-   * @param {string|null} selectedDocId  Feature 1: doc_id to filter by, or null for all docs.
-   */
+  const refreshConversations = useCallback(async () => {
+    setHistoryLoading(true)
+    setHistoryError(null)
+
+    try {
+      const data = await fetchConversations()
+      const next = data.conversations ?? []
+      setConversations(next)
+      saveConversationSummaries(next)
+    } catch (err) {
+      setHistoryError(err.userMessage || 'Failed to load chat history.')
+    } finally {
+      setHistoryLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    refreshConversations()
+  }, [refreshConversations])
+
+  const persistSnapshot = useCallback(
+    async (snapshot = snapshotRef.current) => {
+      if (!snapshot?.session_id) return
+
+      const summary = buildSummary(snapshot)
+      updateConversationList(summary)
+
+      try {
+        await saveConversation(snapshot.session_id, snapshot)
+      } catch {
+        // Local persistence still keeps the UI usable if backend is briefly offline.
+      }
+    },
+    [updateConversationList],
+  )
+
+  const saveCurrentConversation = useCallback(
+    (extra = {}) => {
+      const snapshot = {
+        session_id: sessionId,
+        title: getTitleFromMessages(messages),
+        messages,
+        selected_document: extra.selectedDocument ?? null,
+        preview_document: extra.previewDocument ?? null,
+        retrieved_sources: extra.retrievedSources ?? [],
+        highlights: extra.highlights ?? [],
+      }
+
+      snapshotRef.current = snapshot
+
+      if (messages.length > 0) {
+        persistSnapshot(snapshot)
+      }
+    },
+    [sessionId, messages, persistSnapshot],
+  )
+
+  const addMessage = useCallback((msg) => {
+    const nextMessage = {
+      id: uuidv4(),
+      timestamp: new Date().toISOString(),
+      ...msg,
+    }
+
+    setMessages((prev) => {
+      const next = [...prev, nextMessage]
+      saveMessages(next)
+      return next
+    })
+
+    return nextMessage
+  }, [])
+
   const send = useCallback(
     async (question, selectedDocId = null) => {
       if (!question.trim() || isLoading) return
@@ -100,10 +211,6 @@ export function useChat() {
           processingMs: data.processing_time_ms,
           chunksRetrieved: data.chunks_retrieved,
           docIdFilter: data.doc_id_filter,
-          // ── Highlight feature ──────────────────────────────────────────────
-          // Full chunk objects: [{ chunk_id, text, page_num, filename, score }]
-          // App.jsx reads this from the last assistant message and filters by
-          // the currently previewed document's filename.
           retrievedChunks: data.retrieved_chunks ?? [],
         })
       } catch (err) {
@@ -124,15 +231,67 @@ export function useChat() {
     setMessages([])
     saveMessages([])
     setError(null)
+    snapshotRef.current = null
   }, [])
+
+  const selectConversation = useCallback(
+    async (targetSessionId) => {
+      setHistoryError(null)
+
+      try {
+        const conversation = await fetchConversation(targetSessionId)
+
+        setSessionId(conversation.session_id)
+        saveSession(conversation.session_id)
+
+        setMessages(conversation.messages ?? [])
+        saveMessages(conversation.messages ?? [])
+
+        updateConversationList(buildSummary(conversation))
+        snapshotRef.current = conversation
+
+        return conversation
+      } catch (err) {
+        setHistoryError(err.userMessage || 'Failed to restore chat.')
+        return null
+      }
+    },
+    [updateConversationList],
+  )
+
+  const removeConversation = useCallback(
+    async (targetSessionId) => {
+      await deleteConversation(targetSessionId)
+
+      setConversations((prev) => {
+        const next = prev.filter((item) => item.session_id !== targetSessionId)
+        saveConversationSummaries(next)
+        return next
+      })
+
+      if (targetSessionId === sessionId) {
+        clearSession()
+      }
+    },
+    [sessionId, clearSession],
+  )
 
   return {
     sessionId,
     messages,
+    conversations,
+    historyLoading,
+    historyError,
     isLoading,
     error,
+
     send,
     clearSession,
+    selectConversation,
+    removeConversation,
+    refreshConversations,
+    saveCurrentConversation,
+
     hasMessages: messages.length > 0,
   }
 }
