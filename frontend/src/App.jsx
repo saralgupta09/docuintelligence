@@ -1,17 +1,20 @@
 /**
  * App.jsx
  * --------
- * Feature 2 changes:
- *   - Imports PdfPreviewPanel
- *   - Reads previewDocId, closePreview from useDocuments()
- *   - Renders PdfPreviewPanel between Sidebar and ChatArea when a doc is previewed
- *   - The panel is conditionally mounted so it unmounts fully when closed,
- *     which resets react-pdf state cleanly
+ * Highlight feature change (additive only):
  *
- * Feature 1 wiring (selectedDocId, handleSend, selectedDoc) is unchanged.
+ *   Derives a `highlights` array from the most-recent assistant message's
+ *   `retrievedChunks`, filtered to only the chunks that belong to the
+ *   currently previewed document (matched by filename).
+ *
+ *   Passes `highlights` as a new prop to PdfPreviewPanel.
+ *
+ * All other wiring — Feature 1 (selectedDocId / handleSend), Feature 2
+ * (previewDocId / openPreview / closePreview), upload handling, Sidebar,
+ * ChatArea, TopBar — is completely unchanged.
  */
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import TopBar from './components/TopBar'
 import Sidebar from './components/Sidebar'
 import ChatArea from './components/ChatArea'
@@ -44,6 +47,32 @@ export default function App() {
   const previewDoc = documents.previewDocId
     ? documents.documents.find((d) => d.doc_id === documents.previewDocId) ?? null
     : null
+
+  // ── Highlight feature ────────────────────────────────────────────────────
+  // Find the most-recent assistant message that has retrieved chunks.
+  // Filter those chunks to only the ones from the currently previewed doc
+  // (matched by filename — the timestamped filename stored in ChromaDB metadata
+  //  is the same string used in both chunk.filename and previewDoc.filename).
+  //
+  // Result shape: Array<{ chunk_id, text, page_num, filename, score }>
+  // PdfPreviewPanel uses this to drive customTextRenderer highlighting.
+  const highlights = useMemo(() => {
+    if (!previewDoc) return []
+
+    // Walk backwards through messages to find the last assistant message
+    // that actually has retrieved chunks (not every message will have them
+    // if the answer was an error or the collection was empty).
+    for (let i = chat.messages.length - 1; i >= 0; i--) {
+      const msg = chat.messages[i]
+      if (msg.role === 'assistant' && Array.isArray(msg.retrievedChunks) && msg.retrievedChunks.length > 0) {
+        // Filter to chunks from the previewed document
+        return msg.retrievedChunks.filter(
+          (chunk) => chunk.filename === previewDoc.filename
+        )
+      }
+    }
+    return []
+  }, [previewDoc, chat.messages])
 
   return (
     <div className="h-screen flex flex-col bg-ink-950 text-ink-50 overflow-hidden">
@@ -80,6 +109,7 @@ export default function App() {
           <PdfPreviewPanel
             doc={previewDoc}
             onClose={documents.closePreview}
+            highlights={highlights}
           />
         )}
       </div>

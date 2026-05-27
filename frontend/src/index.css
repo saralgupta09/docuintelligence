@@ -86,3 +86,36 @@
     @apply border-ink-700 my-4;
   }
 }
+
+/* ── Highlight feature: PDF text layer highlight marks ──────────────────────
+ *
+ * react-pdf renders text items as <span> elements inside a div with class
+ * react-pdf__Page__textContent.  The text layer is positioned absolutely on
+ * top of the PDF canvas and the spans are normally transparent (serving
+ * selection / accessibility only).
+ *
+ * When our customTextRenderer wraps a matching item in
+ *   <mark class="pdf-highlight">…</mark>
+ * the mark element creates a visible coloured rectangle that appears as an
+ * orange/amber overlay on the corresponding text in the canvas below.
+ *
+ * The text layer spans keep their PDF-matched font-size and transform so the
+ * rectangles align precisely with the rendered text.
+ * ────────────────────────────────────────────────────────────────────────── */
+.react-pdf__Page__textContent mark.pdf-highlight {
+  /* Ember/orange tint — matches the app's accent colour */
+  background-color: rgba(249, 115, 22, 0.32);  /* ember-500 at 32% opacity */
+  /* Keep text transparent so only the overlay rectangle shows,
+     letting the sharp canvas text show through */
+  color: inherit;
+  border-radius: 2px;
+  /* No padding — the span is positioned to exactly cover the canvas text */
+  padding: 0;
+  /* Smooth appearance when new highlights load */
+  transition: background-color 0.15s ease;
+}
+
+/* Slightly stronger highlight on the "active" page (optional visual enhancement) */
+.react-pdf__Page__textContent mark.pdf-highlight:hover {
+  background-color: rgba(249, 115, 22, 0.5);
+}

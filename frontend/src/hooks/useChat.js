@@ -1,14 +1,18 @@
 /**
  * hooks/useChat.js
  * ----------------
- * Manages the full chat lifecycle.
+ * Highlight feature change (additive only):
  *
- * Feature 1 change: send() now accepts an optional second argument selectedDocId.
- * When provided it is forwarded to askQuestion() so the backend scopes
- * retrieval to that document. When null/undefined, all documents are searched.
+ *   addMessage() for the assistant role now also stores:
+ *     retrievedChunks: data.retrieved_chunks ?? []
  *
- * Everything else — session persistence, message array, localStorage, error
- * handling, clearSession — is completely unchanged.
+ *   This is the array of { chunk_id, text, page_num, filename, score }
+ *   objects returned by the updated ask.py.  App.jsx reads this field
+ *   from the most-recent assistant message to derive highlights for
+ *   PdfPreviewPanel.
+ *
+ * Nothing else changes: session persistence, send(), clearSession(),
+ * error handling, doc_id filter forwarding (Feature 1) are all untouched.
  */
 
 import { useState, useCallback, useRef } from 'react'
@@ -69,7 +73,7 @@ export function useChat() {
   /**
    * Send a question to the backend.
    *
-   * @param {string} question       The user's question text.
+   * @param {string} question         The user's question text.
    * @param {string|null} selectedDocId  Feature 1: doc_id to filter by, or null for all docs.
    */
   const send = useCallback(
@@ -81,7 +85,6 @@ export function useChat() {
       setIsLoading(true)
 
       try {
-        // Feature 1: pass selectedDocId (null is fine — API treats it as "all docs")
         const data = await askQuestion(question, sessionId, selectedDocId)
 
         if (data.session_id && data.session_id !== sessionId) {
@@ -96,8 +99,12 @@ export function useChat() {
           rewrittenQuery: data.rewritten_query,
           processingMs: data.processing_time_ms,
           chunksRetrieved: data.chunks_retrieved,
-          // Feature 1: store which doc was filtered (for display in messages if desired)
           docIdFilter: data.doc_id_filter,
+          // ── Highlight feature ──────────────────────────────────────────────
+          // Full chunk objects: [{ chunk_id, text, page_num, filename, score }]
+          // App.jsx reads this from the last assistant message and filters by
+          // the currently previewed document's filename.
+          retrievedChunks: data.retrieved_chunks ?? [],
         })
       } catch (err) {
         const msg = err.userMessage || 'Something went wrong. Please try again.'
